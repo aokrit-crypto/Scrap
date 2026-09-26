@@ -1,15 +1,166 @@
-Material,Model,Quantity,Location,Problem,Cause,Solution,???????????,Pic,????,Target date,
-0060892154,CAB FOAM ASSY-/TM12_WW,2,RAC4-PU Foam A,??????????,???????????????????????????,OJT???????,70038504,K.????????,PDA,,23/09/26 N
-0070850434,CAB FOAM ASSY-/FUF_18Q,1,RAC4-PU Foam A,??????????????,??????? Jig no.5,????????????????????????????,,K.Gao Qiangchuan,ME,,23/09/26 N
-0060881296,CAB FOAM ASSY-/ECRA147ONL_CB/MB/CS_G-BLK,1,RAC4-PU Foam A,??????? Bottom ,???????????????????????????,OJT???????,70038504,K.????????,PDA,,23/09/26 N
-0060880834,CAB FOAM ASSY-/TATUNG_320_TR-B1332VDB,1,RAC4-PU Foam A,??????,????????????????????????????????,OJT???????,70038504,K.????????,PDA,,23/09/26 N
-0060892154,CAB FOAM ASSY-/TM12_WW,1,RAC4-PU Foam A,????????,???????????????????????????,OJT???????,70039983,K.???,PDA,,23/09/26 N
-0070850432,CAB FOAM ASSY-/FUF_22S,1,RAC4-PU Foam A,??????,???????????????????????????,????????????????????????????,,,,?????? IQC ???,23/09/26 N
-0060880562,CAB FOAM ASSY-/TM545-HRF212_OB_INV,1,RAC4-PU Foam A,????????????,?????????????????????????,OJT???????,70040955,K.??????????,PDA,,23/09/26 N
-0070850432,CAB FOAM ASSY-/FUF_22S,1,RAC4-PU Foam A,??????,???????????????????????????,OJT???????,70039983,K.???,PDA,,23/09/26 N
-0070850431,CAB FOAM ASSY-/FUF_22Q,1,RAC4-PU Foam A,?????????????,???????????????????????????,OJT???????,70039969,K.?????,PDA,,23/09/26 N
-0060877093,CAB FOAM ASSY-/G3_ECO_HRF-468NS,3,RAC4-PU Foam A,????????????,?????????????????????????,OJT???????,70039983,K.???,PDA,,23/09/26 N
-0070850437,CAB FOAM ASSY-/FUF_14Q,1,RAC4-PU Foam A,?????? Final,???????????????????????????,OJT???????,70038507,K.?????,PDA,,23/09/26 N
-0060885079,CAB FOAM ASSY-/320_WH_EXP,1,RAC4-PU Foam A,????????????,?????????????????????????,OJT???????,70039983,K.???,PDA,,23/09/26 N
-0060892153,CAB FOAM ASSY-/TM12_SS,2,RAC4-PU Foam A,????????? F ???,???????????????,????????????????????????????,70037404,K.?????,TF,,23/09/26 N
-0070850434,CAB FOAM ASSY-/FUF_18Q,1,RAC4-PU Foam A,?????????????????,???????????????????????????,OJT???????,70040955,K.??????????,PDA,,23/09/26 N
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard แสดงข้อมูลจาก CSV</title>
+    
+    <!-- 1. ดึง PapaParse สำหรับอ่าน CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <!-- 2. ดึง Chart.js สำหรับวาดกราฟ -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f141d;
+            color: #ffffff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #151b26;
+            border: 1px solid #1e2736;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #3b82f6;
+            margin-bottom: 15px;
+        }
+        /* Style ตาราง */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #1e2736;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #1f293d;
+            color: #60a5fa;
+        }
+        tr:nth-child(even) {
+            background-color: #1a2230;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📊 Dashboard ข้อมูลจาก CSV</h1>
+        
+        <!-- ส่วนแสดงกราฟ -->
+        <div class="card">
+            <h2>กราฟแสดงข้อมูล</h2>
+            <div style="height: 300px;">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+        <!-- ส่วนแสดงตารางข้อมูล -->
+        <div class="card">
+            <h2>ตารางข้อมูลจากไฟล์ CSV</h2>
+            <div id="table-container" style="overflow-x: auto;">
+                กำลังโหลดข้อมูล...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ชื่อไฟล์ CSV ที่อยู่บน GitHub ของคุณ
+        const csvFilePath = 'data.csv';
+
+        // ใช้ PapaParse อ่านไฟล์ CSV
+        Papa.parse(csvFilePath, {
+            download: true,       // ดาวน์โหลดไฟล์อัตโนมัติ
+            header: true,         // ใช้บรรทัดแรกเป็นหัวข้อคอลัมน์ (Header)
+            skipEmptyLines: true, // ข้ามบรรทัดว่าง
+            complete: function(results) {
+                const data = results.data;
+                
+                // 1. นำข้อมูลไปสร้างตาราง
+                createTable(data);
+
+                // 2. นำข้อมูลไปสร้างกราฟ (ตัวอย่าง: เอาคอลัมน์แรก และ คอลัมน์สอง)
+                createChart(data);
+            },
+            error: function(err) {
+                document.getElementById('table-container').innerHTML = 
+                    '<p style="color: #ef4444;">❌ ไม่พบไฟล์ data.csv กรุณาตรวจสอบว่ามีไฟล์นี้อยู่ใน GitHub แล้วหรือยัง</p>';
+            }
+        });
+
+        // ฟังก์ชันสร้างตาราง HTML
+        function createTable(data) {
+            if (data.length === 0) return;
+
+            const headers = Object.keys(data[0]);
+            let tableHTML = '<table><thead><tr>';
+
+            // สร้างหัวข้อตาราง (Header)
+            headers.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+
+            // สร้างแถวข้อมูล (Rows)
+            data.forEach(row => {
+                tableHTML += '<tr>';
+                headers.forEach(header => {
+                    tableHTML += `<td>${row[header] || ''}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+
+            tableHTML += '</tbody></table>';
+            document.getElementById('table-container').innerHTML = tableHTML;
+        }
+
+        // ฟังก์ชันวาดกราฟด้วย Chart.js
+        function createChart(data) {
+            if (data.length === 0) return;
+
+            const headers = Object.keys(data[0]);
+            const labelKey = headers[0]; // คอลัมน์แรก (เช่น ชื่อสินค้า / วันที่)
+            const valueKey = headers[1]; // คอลัมน์ที่สอง (เช่น ยอดขาย / จำนวน)
+
+            const labels = data.map(row => row[labelKey]);
+            const values = data.map(row => parseFloat(row[valueKey]) || 0);
+
+            const ctx = document.getElementById('myChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: valueKey,
+                        data: values,
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#9ba4b5' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#9ba4b5' }, grid: { display: false } },
+                        y: { ticks: { color: '#9ba4b5' }, grid: { color: '#1e2736' } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
