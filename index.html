@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Production Scrap Dashboard</title>
     
-    <!-- PapaParse & Chart.js & Google Fonts -->
+    <!-- PapaParse, SheetJS (สำหรับอ่าน Excel) & Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -33,7 +35,7 @@
         }
         .btn-filter.active { background-color: #3b82f6; color: #ffffff; }
 
-        /* Summary KPI Cards */
+        /* KPI Cards */
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .kpi-card { background-color: #151b26; border: 1px solid #1e2736; border-radius: 10px; padding: 18px; }
         .kpi-title { font-size: 12px; color: #9ba4b5; margin-bottom: 8px; }
@@ -42,15 +44,34 @@
         .badge-red { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
         .badge-blue { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; }
 
-        /* Dashboard Content Cards */
+        /* Cards & Action Section */
         .card { background-color: #151b26; border: 1px solid #1e2736; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
-        .card-title { font-size: 16px; font-weight: 600; color: #ffffff; margin-bottom: 15px; }
+        .card-title { font-size: 16px; font-weight: 600; color: #ffffff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
 
-        /* Table */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        th, td { border: 1px solid #1e2736; padding: 10px 12px; text-align: left; }
-        th { background-color: #1f293d; color: #60a5fa; font-weight: 600; }
-        tr:nth-child(even) { background-color: #19212e; }
+        /* Form & Import Controls */
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .action-grid { grid-template-columns: 1fr; } }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; color: #9ba4b5; margin-bottom: 5px; }
+        .form-control {
+            width: 100%; background-color: #1e2736; border: 1px solid #2d3748;
+            border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 13px;
+        }
+        .btn-submit {
+            width: 100%; background-color: #10b981; color: white; border: none;
+            padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 5px;
+        }
+        .btn-submit:hover { background-color: #059669; }
+
+        /* Upload Box */
+        .upload-box {
+            border: 2px dashed #3b82f6; border-radius: 8px; padding: 30px;
+            text-align: center; background-color: rgba(59, 130, 246, 0.05);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .upload-box:hover { background-color: rgba(59, 130, 246, 0.1); }
+        .upload-icon { font-size: 32px; color: #3b82f6; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -88,16 +109,52 @@
 
         <!-- Main Chart -->
         <div class="card">
-            <div class="card-title" id="chartTitle">แนวโน้มของเสีย (Scrap Trend) - รายวัน</div>
+            <div class="card-title" id="chartTitle"><i class="fa-solid fa-chart-line"></i> แนวโน้มของเสีย (Scrap Trend)</div>
             <div style="height: 320px;">
                 <canvas id="scrapChart"></canvas>
             </div>
         </div>
 
-        <!-- Data Table -->
-        <div class="card">
-            <div class="card-title">ตารางสรุปข้อมูล</div>
-            <div id="table-container" style="overflow-x: auto;">กำลังโหลดข้อมูล...</div>
+        <!-- Data Input & Excel Import Section (แทนที่ตารางเดิม) -->
+        <div class="action-grid">
+            <!-- 1. ปุ่มอัปโหลดไฟล์ Excel / CSV -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-file-excel" style="color: #10b981;"></i> อัปโหลดไฟล์ Excel / CSV</div>
+                <div class="upload-box" onclick="document.getElementById('excelFileInput').click()">
+                    <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                    <p style="font-size: 14px; font-weight: 600; color: #fff;">คลิกเพื่อเลือกไฟล์ Excel หรือ CSV</p>
+                    <p style="font-size: 12px; color: #9ba4b5; margin-top: 5px;">รองรับไฟล์ .xlsx, .xls, .csv</p>
+                    <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display: none;" onchange="handleFileUpload(event)">
+                </div>
+            </div>
+
+            <!-- 2. ฟอร์มเพิ่มข้อมูลประจำวัน -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-plus" style="color: #3b82f6;"></i> ป้อนข้อมูลของเสียใหม่</div>
+                <form id="scrapForm" onsubmit="addNewData(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label>วันที่ (Date)</label>
+                            <input type="date" id="inputDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Material / Model</label>
+                            <input type="text" id="inputModel" placeholder="เช่น CAB FOAM" class="form-control" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label>ยอดผลิต (Production Qty)</label>
+                            <input type="number" id="inputProd" placeholder="0" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ของเสีย (Scrap Qty)</label>
+                            <input type="number" id="inputScrap" placeholder="0" class="form-control" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fa-solid fa-plus"></i> เพิ่มข้อมูลลงใน Dashboard</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -107,6 +164,7 @@
         let currentPeriod = 'daily';
         let scrapChartInstance = null;
 
+        // ดึงข้อมูลเริ่มต้นจาก data.csv บน Repository
         Papa.parse(csvFilePath, {
             download: true,
             header: true,
@@ -116,10 +174,62 @@
                 renderDashboard();
             },
             error: function() {
-                document.getElementById('table-container').innerHTML = 
-                    '<p style="color: #ef4444;">❌ ไม่พบไฟล์ data.csv กรุณาตรวจสอบว่ามีไฟล์นี้บน GitHub แล้วหรือยัง</p>';
+                console.log("ไม่พบไฟล์ data.csv เริ่มต้น เริ่มใช้ข้อมูลเปล่า");
+                renderDashboard();
             }
         });
+
+        // 1. ฟังก์ชันนำเข้าไฟล์ Excel / CSV Direct จากเครื่อง
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            
+            if (file.name.endsWith('.csv')) {
+                Papa.parse(file, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        rawData = results.data;
+                        renderDashboard();
+                        alert('✅ นำเข้าข้อมูลจาก CSV สำเร็จเรียบร้อย!');
+                    }
+                });
+            } else {
+                // อ่านไฟล์ .xlsx / .xls ด้วย SheetJS
+                reader.onload = function(e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    rawData = XLSX.utils.sheet_to_json(worksheet);
+                    renderDashboard();
+                    alert('✅ นำเข้าข้อมูลจากไฟล์ Excel สำเร็จเรียบร้อย!');
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        }
+
+        // 2. ฟังก์ชันป้อนข้อมูลใหม่ผ่านหน้าเว็บ
+        function addNewData(e) {
+            e.preventDefault();
+            const date = document.getElementById('inputDate').value;
+            const model = document.getElementById('inputModel').value;
+            const prod = document.getElementById('inputProd').value;
+            const scrap = document.getElementById('inputScrap').value;
+
+            rawData.push({
+                'Date': date,
+                'Model': model,
+                'ProductionQty': prod,
+                'ScrapQty': scrap
+            });
+
+            renderDashboard();
+            document.getElementById('scrapForm').reset();
+            alert('✅ เพิ่มข้อมูลใหม่เข้า Dashboard เรียบร้อยแล้ว!');
+        }
 
         function setPeriod(period, btn) {
             currentPeriod = period;
@@ -131,7 +241,6 @@
         function renderDashboard() {
             if (rawData.length === 0) return;
 
-            // จัดกลุ่มข้อมูลตาม Period (Daily / Weekly / Monthly / Yearly)
             const grouped = {};
             let globalProd = 0;
             let globalScrap = 0;
@@ -149,45 +258,38 @@
                 let key = dateStr;
 
                 if (currentPeriod === 'weekly') {
-                    const weekNum = getWeekNumber(date);
-                    key = `${date.getFullYear()}-W${weekNum}`;
+                    key = `${date.getFullYear()}-W${getWeekNumber(date)}`;
                 } else if (currentPeriod === 'monthly') {
-                    key = dateStr.substring(0, 7); // YYYY-MM
+                    key = dateStr.substring(0, 7);
                 } else if (currentPeriod === 'yearly') {
-                    key = dateStr.substring(0, 4); // YYYY
+                    key = dateStr.substring(0, 4);
                 }
 
-                if (!grouped[key]) {
-                    grouped[key] = { prod: 0, scrap: 0 };
-                }
+                if (!grouped[key]) grouped[key] = { prod: 0, scrap: 0 };
                 grouped[key].prod += prod;
                 grouped[key].scrap += scrap;
             });
 
-            // 1. อัปเดต KPIs
+            // อัปเดต KPIs
             document.getElementById('totalOutput').innerText = globalProd.toLocaleString();
             document.getElementById('totalScrap').innerText = globalScrap.toLocaleString();
             const rate = globalProd > 0 ? ((globalScrap / globalProd) * 100).toFixed(2) : 0;
             document.getElementById('scrapRate').innerText = `${rate}%`;
 
-            // 2. อัปเดตกราฟ
+            // อัปเดตกราฟ
             const labels = Object.keys(grouped).sort();
             const scrapData = labels.map(k => grouped[k].scrap);
             const rateData = labels.map(k => grouped[k].prod > 0 ? ((grouped[k].scrap / grouped[k].prod) * 100).toFixed(2) : 0);
 
             updateChart(labels, scrapData, rateData);
-
-            // 3. แสดงตารางข้อมูล
-            createTable(rawData);
         }
 
         function updateChart(labels, scrapData, rateData) {
             const ctx = document.getElementById('scrapChart').getContext('2d');
-            
             if (scrapChartInstance) scrapChartInstance.destroy();
 
             const periodNames = { daily: 'รายวัน', weekly: 'รายสัปดาห์', monthly: 'รายเดือน', yearly: 'รายปี' };
-            document.getElementById('chartTitle').innerText = `แนวโน้มของเสีย และ Scrap Rate (%) - ${periodNames[currentPeriod]}`;
+            document.getElementById('chartTitle').innerHTML = `<i class="fa-solid fa-chart-line"></i> แนวโน้มของเสีย และ Scrap Rate (%) - ${periodNames[currentPeriod]}`;
 
             scrapChartInstance = new Chart(ctx, {
                 type: 'bar',
@@ -234,27 +336,6 @@
                     plugins: { legend: { labels: { color: '#9ba4b5' } } }
                 }
             });
-        }
-
-        function createTable(data) {
-            if (data.length === 0) return;
-            const headers = Object.keys(data[0]);
-            let tableHTML = '<table><thead><tr>';
-            headers.forEach(h => tableHTML += `<th>${h}</th>`);
-            tableHTML += '<th>Scrap Rate (%)</th></tr></thead><tbody>';
-
-            data.forEach(row => {
-                tableHTML += '<tr>';
-                const prod = parseFloat(row['ProductionQty']) || 0;
-                const scrap = parseFloat(row['ScrapQty']) || 0;
-                const rowRate = prod > 0 ? ((scrap / prod) * 100).toFixed(2) : 0;
-
-                headers.forEach(h => tableHTML += `<td>${row[h] || ''}</td>`);
-                tableHTML += `<td style="color: #f59e0b; font-weight: 600;">${rowRate}%</td></tr>`;
-            });
-
-            tableHTML += '</tbody></table>';
-            document.getElementById('table-container').innerHTML = tableHTML;
         }
 
         function getWeekNumber(d) {
