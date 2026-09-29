@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Production Scrap Dashboard</title>
     
-    <!-- PapaParse, SheetJS & Chart.js Libraries -->
+    <!-- PapaParse, SheetJS & Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -23,7 +23,6 @@
         }
         h1 { color: #3b82f6; font-size: 24px; display: flex; align-items: center; gap: 10px; }
 
-        /* Filter Buttons Period */
         .filter-group {
             display: flex; background-color: #151b26; border: 1px solid #1e2736;
             border-radius: 8px; padding: 4px; gap: 4px;
@@ -35,7 +34,6 @@
         }
         .btn-filter.active { background-color: #3b82f6; color: #ffffff; }
 
-        /* KPI Cards Grid */
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .kpi-card { background-color: #151b26; border: 1px solid #1e2736; border-radius: 10px; padding: 18px; }
         .kpi-title { font-size: 12px; color: #9ba4b5; margin-bottom: 8px; }
@@ -45,29 +43,20 @@
         .badge-blue { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; }
         .badge-amber { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
 
-        /* Main Cards Container */
         .card { background-color: #151b26; border: 1px solid #1e2736; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
         .card-title { font-size: 16px; font-weight: 600; color: #ffffff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
 
-        /* Pareto Layout Grid (70% Graph / 30% Table) */
         .pareto-grid {
-            display: grid;
-            grid-template-columns: 7fr 3fr;
-            gap: 20px;
-            margin-bottom: 20px;
+            display: grid; grid-template-columns: 7fr 3fr; gap: 20px; margin-bottom: 20px;
         }
-        @media (max-width: 992px) {
-            .pareto-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 992px) { .pareto-grid { grid-template-columns: 1fr; } }
 
-        /* Pareto Table Style */
         .table-scroll { max-height: 320px; overflow-y: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 12px; }
         th, td { border: 1px solid #1e2736; padding: 8px 10px; text-align: left; }
         th { background-color: #1f293d; color: #60a5fa; font-weight: 600; position: sticky; top: 0; }
         tr:nth-child(even) { background-color: #19212e; }
 
-        /* Import & Add Action Grid */
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 768px) { .action-grid { grid-template-columns: 1fr; } }
 
@@ -83,7 +72,6 @@
         }
         .btn-submit:hover { background-color: #059669; }
 
-        /* Upload Area */
         .upload-box {
             border: 2px dashed #3b82f6; border-radius: 8px; padding: 30px;
             text-align: center; background-color: rgba(59, 130, 246, 0.05);
@@ -96,7 +84,7 @@
 <body>
 
     <div class="container">
-        <!-- Header & Period Buttons -->
+        <!-- Header & Period Filter -->
         <div class="header-bar">
             <h1><i class="fa-solid fa-industry"></i> Production Scrap Dashboard</h1>
             <div class="filter-group">
@@ -107,7 +95,7 @@
             </div>
         </div>
 
-        <!-- KPI Summaries -->
+        <!-- KPI Summary Cards -->
         <div class="kpi-grid">
             <div class="kpi-card">
                 <div class="kpi-title">ยอดการผลิตทั้งหมด (Total Output)</div>
@@ -126,7 +114,7 @@
             </div>
         </div>
 
-        <!-- Main Trend Chart -->
+        <!-- Trend Chart -->
         <div class="card">
             <div class="card-title" id="chartTitle"><i class="fa-solid fa-chart-line"></i> แนวโน้มของเสีย (Scrap Trend)</div>
             <div style="height: 300px;">
@@ -134,17 +122,15 @@
             </div>
         </div>
 
-        <!-- Pareto Analysis Section (70% Graph / 30% Table Layout) -->
+        <!-- Pareto Analysis Grid -->
         <div class="pareto-grid">
-            <!-- Left Side: Pareto Chart 70% -->
             <div class="card" style="margin-bottom: 0;">
-                <div class="card-title"><i class="fa-solid fa-chart-pie" style="color: #f59e0b;"></i> Pareto TOP 10 Defects (วิเคราะห์อาการเสีย)</div>
+                <div class="card-title"><i class="fa-solid fa-chart-pie" style="color: #f59e0b;"></i> Pareto TOP 10 Defects</div>
                 <div style="height: 320px;">
                     <canvas id="paretoChart"></canvas>
                 </div>
             </div>
 
-            <!-- Right Side: Defect Table 30% -->
             <div class="card" style="margin-bottom: 0;">
                 <div class="card-title"><i class="fa-solid fa-list-ol" style="color: #3b82f6;"></i> สรุปอันดับปัญหา</div>
                 <div class="table-scroll">
@@ -164,20 +150,20 @@
             </div>
         </div>
 
-        <!-- Input Form & Excel Upload Section -->
+        <!-- Action Controls -->
         <div class="action-grid">
-            <!-- 1. Upload Excel / CSV -->
+            <!-- Upload Excel / CSV -->
             <div class="card">
                 <div class="card-title"><i class="fa-solid fa-file-excel" style="color: #10b981;"></i> อัปโหลดไฟล์ Excel / CSV</div>
                 <div class="upload-box" onclick="document.getElementById('excelFileInput').click()">
                     <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
                     <p style="font-size: 14px; font-weight: 600; color: #fff;">คลิกเพื่อเลือกไฟล์ Excel หรือ CSV</p>
-                    <p style="font-size: 12px; color: #9ba4b5; margin-top: 5px;">รองรับไฟล์ .xlsx, .xls, .csv (ตามไฟล์ตัวอย่าง Scrap Data)</p>
+                    <p style="font-size: 12px; color: #9ba4b5; margin-top: 5px;">รองรับไฟล์ Scrap Data (.xlsx, .xls, .csv)</p>
                     <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display: none;" onchange="handleFileUpload(event)">
                 </div>
             </div>
 
-            <!-- 2. Manual Input Form -->
+            <!-- Add Data Form -->
             <div class="card">
                 <div class="card-title"><i class="fa-solid fa-plus" style="color: #3b82f6;"></i> ป้อนข้อมูลของเสียใหม่</div>
                 <form id="scrapForm" onsubmit="addNewData(event)">
@@ -212,41 +198,60 @@
     </div>
 
     <script>
-        const csvFilePath = './data.csv';
         let rawData = [];
         let currentPeriod = 'daily';
         let scrapChartInstance = null;
         let paretoChartInstance = null;
 
-        // ดึงข้อมูล data.csv เริ่มต้น
-        Papa.parse(csvFilePath, {
-            download: true,
-            header: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                rawData = processImportedRows(results.data);
-                renderDashboard();
-            },
-            error: function() {
-                console.log("ไม่พบไฟล์ data.csv เริ่มต้น");
-                renderDashboard();
-            }
-        });
+        // ฟังก์ชันอัจฉริยะสำหรับแปลงข้อมูลจาก Excel ให้สมบูรณ์แบบ (รองรับ Forward-Fill วันที่ และ Daily Actual)
+        function processRawExcelData(rows) {
+            let processed = [];
+            let lastDate = '';
+            let lastProd = 0;
 
-        // แมปชื่อคอลัมน์จากไฟล์ Excel/CSV ให้มาตรฐานเดียวกัน
-        function processImportedRows(rows) {
-            return rows.map(r => {
-                return {
-                    Date: r['Date (วันที่)'] || r['Date'] || r['date'] || '',
-                    ProductionQty: parseFloat(r['Daily Actual'] || r['ProductionQty'] || r['Production']) || 0,
-                    ScrapQty: parseFloat(r['Quantity (จำนวน)'] || r['ScrapQty'] || r['Quantity'] || r['Scrap']) || 0,
-                    Problem: r['Problem (ปัญหา)'] || r['Problem'] || r['problem'] || 'ไม่ระบุ',
-                    Model: r['Model'] || r['Material'] || ''
-                };
-            }).filter(item => item.Date !== '');
+            rows.forEach(r => {
+                // ค้นหาคีย์ชื่อ Date, Daily Actual, Scrap Qty, Problem
+                let dateVal = r['Date (วันที่)'] || r['Date'] || r['date'] || r['วันที่'] || '';
+                let prodVal = r['Daily Actual'] || r['ProductionQty'] || r['Production'] || r['ยอดผลิต'] || '';
+                let scrapVal = r['Quantity (จำนวน)'] || r['ScrapQty'] || r['Quantity'] || r['จำนวน'] || r['Scrap'] || 0;
+                let problemVal = r['Problem (ปัญหา)'] || r['Problem'] || r['problem'] || r['ปัญหา'] || 'ไม่ระบุ';
+                let modelVal = r['Model'] || r['Material'] || '';
+
+                // ระบบ Forward-fill กรณีวันที่หรือยอดผลิตถูกเว้นว่างใน Excel
+                if (dateVal) {
+                    // แปลงรูปแบบวันที่กรณีเป็น Excel Serial Date หรือ String
+                    if (typeof dateVal === 'number') {
+                        let parsedDate = XLSX.SSF.parse_date_code(dateVal);
+                        lastDate = `${parsedDate.y}-${String(parsedDate.m).padStart(2, '0')}-${String(parsedDate.d).padStart(2, '0')}`;
+                    } else {
+                        lastDate = String(dateVal).trim();
+                    }
+                }
+
+                if (prodVal !== '' && prodVal !== null && !isNaN(prodVal)) {
+                    lastProd = parseFloat(prodVal);
+                } else {
+                    prodVal = 0; // เพื่อไม่ให้บวกรวมยอดผลิตซ้ำในแถวย่อย
+                }
+
+                let scrapQty = parseFloat(scrapVal) || 0;
+
+                // บันทึกเฉพาะแถวที่มีรายการ Scrap จริง
+                if (lastDate && scrapQty > 0) {
+                    processed.push({
+                        Date: lastDate,
+                        ProductionQty: parseFloat(prodVal) || 0, // ยอดผลิตจะนับเฉพาะแถวแรกของวัน
+                        ScrapQty: scrapQty,
+                        Problem: String(problemVal).trim(),
+                        Model: String(modelVal).trim()
+                    });
+                }
+            });
+
+            return processed;
         }
 
-        // นำเข้าไฟล์ Excel / CSV จากปุ่มกด
+        // นำเข้าไฟล์ Excel / CSV Direct
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -257,9 +262,9 @@
                     header: true,
                     skipEmptyLines: true,
                     complete: function(results) {
-                        rawData = processImportedRows(results.data);
+                        rawData = processRawExcelData(results.data);
                         renderDashboard();
-                        alert('✅ นำเข้าข้อมูลจาก CSV สำเร็จ!');
+                        alert('✅ นำเข้าข้อมูล CSV เรียบร้อยแล้ว!');
                     }
                 });
             } else {
@@ -267,16 +272,28 @@
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const json = XLSX.utils.sheet_to_json(worksheet, { range: 2 }); // อ่านเริ่มแถวหัวข้อหลัก
-                    rawData = processImportedRows(json);
+                    
+                    // แปลง Sheet เป็น Array of Array เพื่อค้นหา Header อัตโนมัติ
+                    const rawJsonArray = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    // ค้นหาแถวที่เป็น Header (ที่มีคำว่า Date หรือ วันที่)
+                    let headerIndex = rawJsonArray.findIndex(row => 
+                        row.some(cell => String(cell).includes('Date') || String(cell).includes('วันที่'))
+                    );
+
+                    if (headerIndex === -1) headerIndex = 0; // Fallback ถ้าหาไม่เจอ
+
+                    // อ่านข้อมูลเป็น JSON โดยเริ่มจาก Header ที่หาเจอ
+                    const json = XLSX.utils.sheet_to_json(worksheet, { range: headerIndex });
+                    rawData = processRawExcelData(json);
+                    
                     renderDashboard();
-                    alert('✅ นำเข้าข้อมูลจากไฟล์ Excel สำเร็จ!');
+                    alert(`✅ นำเข้าข้อมูลจากไฟล์ Excel เรียบร้อย! (ประมวลผล ${rawData.length} รายการ)`);
                 };
                 reader.readAsArrayBuffer(file);
             }
         }
 
-        // ฟอร์มเพิ่มข้อมูลผ่านหน้าเว็บ
         function addNewData(e) {
             e.preventDefault();
             rawData.push({
@@ -288,7 +305,7 @@
             });
             renderDashboard();
             document.getElementById('scrapForm').reset();
-            alert('✅ เพิ่มข้อมูลใหม่เรียบร้อย!');
+            alert('✅ เพิ่มข้อมูลเรียบร้อย!');
         }
 
         function setPeriod(period, btn) {
@@ -317,18 +334,15 @@
                 globalProd += prod;
                 globalScrap += scrap;
 
-                // จัดกลุ่มวันที่ตามช่วงเวลาที่เลือก
-                const date = new Date(dateStr);
                 let key = dateStr;
-
-                if (!isNaN(date.getTime())) {
-                    if (currentPeriod === 'weekly') {
-                        key = `${date.getFullYear()}-W${getWeekNumber(date)}`;
-                    } else if (currentPeriod === 'monthly') {
-                        key = dateStr.substring(0, 7);
-                    } else if (currentPeriod === 'yearly') {
-                        key = dateStr.substring(0, 4);
-                    }
+                // Format Date Key
+                if (currentPeriod === 'weekly') {
+                    let d = new Date(dateStr);
+                    if (!isNaN(d)) key = `${d.getFullYear()}-W${getWeekNumber(d)}`;
+                } else if (currentPeriod === 'monthly') {
+                    key = dateStr.substring(0, 7);
+                } else if (currentPeriod === 'yearly') {
+                    key = dateStr.substring(0, 4);
                 }
 
                 if (!grouped[key]) grouped[key] = { prod: 0, scrap: 0 };
@@ -339,7 +353,7 @@
                 problemGrouped[problem] += scrap;
             });
 
-            // 1. KPI Cards Summary
+            // 1. KPI Cards
             document.getElementById('totalOutput').innerText = globalProd.toLocaleString();
             document.getElementById('totalScrap').innerText = globalScrap.toLocaleString();
             const rate = globalProd > 0 ? ((globalScrap / globalProd) * 100).toFixed(2) : 0;
@@ -351,7 +365,7 @@
             const rateData = labels.map(k => grouped[k].prod > 0 ? ((grouped[k].scrap / grouped[k].prod) * 100).toFixed(2) : 0);
             updateScrapChart(labels, scrapData, rateData);
 
-            // 3. Pareto Chart & Table
+            // 3. Pareto Chart
             renderPareto(problemGrouped, globalScrap);
         }
 
