@@ -126,7 +126,7 @@
                 </div>
             </div>
 
-            <!-- KPI Cards Row (7 ช่อง: ยอดผลิตรวม + จำนวนของเสีย + %รวม + Line A ชิ้น/% + Door ชิ้น/% + กะ D + กะ N) -->
+            <!-- KPI Cards Row (7 ช่อง) -->
             <div class="grid grid-cols-2 md:grid-cols-7 gap-4">
                 <!-- 0. ยอดผลิตรวม -->
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
@@ -164,7 +164,7 @@
                     </div>
                 </div>
 
-                <!-- 3. ตู้ Line A (แยกชิ้นและ %) -->
+                <!-- 3. ตู้ Line A -->
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <span class="text-xs font-semibold text-slate-500">ตู้ Line A</span>
@@ -176,7 +176,7 @@
                     </div>
                 </div>
 
-                <!-- 4. Door (แยกชิ้นและ %) -->
+                <!-- 4. Door -->
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <span class="text-xs font-semibold text-slate-500">Door</span>
@@ -925,7 +925,20 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } }, datalabels: { display: false } }
+                    plugins: { 
+                        legend: { 
+                            position: 'right', 
+                            labels: { 
+                                boxWidth: 14, 
+                                font: { 
+                                    size: 13, // ปรับขนาดตัวหนังสือปัญหาด้านข้างให้ใหญ่ขึ้นที่นี่
+                                    weight: '600' // เพิ่มความหนาเล็กน้อยเพื่อให้มองเห็นชัดเจนยิ่งขึ้น
+                                },
+                                padding: 12
+                            } 
+                        }, 
+                        datalabels: { display: false } 
+                    }
                 }
             });
         }
@@ -1015,7 +1028,9 @@
                     ]
                 },
                 options: {
-                    responsive: true,
+                    responsive: {
+                        
+                    },
                     maintainAspectRatio: false,
                     plugins: { legend: { position: 'top' }, datalabels: { display: false } },
                     scales: { y: { beginAtZero: true }, x: { ticks: { font: { size: 9 }, maxRotation: 45 } } }
