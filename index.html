@@ -126,8 +126,20 @@
                 </div>
             </div>
 
-            <!-- KPI Cards Row (6 ช่อง: รวม + %รวม + Line A ชิ้น/% + Door ชิ้น/% + กะ D + กะ N) -->
-            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+            <!-- KPI Cards Row (7 ช่อง: ยอดผลิตรวม + จำนวนของเสีย + %รวม + Line A ชิ้น/% + Door ชิ้น/% + กะ D + กะ N) -->
+            <div class="grid grid-cols-2 md:grid-cols-7 gap-4">
+                <!-- 0. ยอดผลิตรวม -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-semibold text-slate-500">ยอดผลิตรวม</span>
+                        <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-industry"></i></div>
+                    </div>
+                    <div class="mt-2">
+                        <span id="kpiProd" class="text-2xl font-bold text-slate-800">3,600</span>
+                        <p class="text-[11px] text-slate-400 mt-0.5">ชิ้น (เป้าหมายผลิต)</p>
+                    </div>
+                </div>
+
                 <!-- 1. จำนวนของเสียรวม -->
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
@@ -136,7 +148,7 @@
                     </div>
                     <div class="mt-2">
                         <span id="kpiScrap" class="text-2xl font-bold text-red-600">66</span>
-                        <p class="text-[11px] text-slate-400 mt-0.5">ชิ้น (ผลิต <span id="kpiProd">3,600</span>)</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">ชิ้น (จากยอดผลิต)</p>
                     </div>
                 </div>
 
@@ -658,7 +670,6 @@
             let scrapN = rawData.filter(i => i.shift === 'N').reduce((s, i) => s + i.qty, 0);
             let scrapAll = scrapD + scrapN;
 
-            // คำนวณแยกตามหน่วยงาน (Line A และ Door)
             let scrapLineA = rawData.filter(i => i.dept === 'Line A').reduce((s, i) => s + i.qty, 0);
             let scrapDoor = rawData.filter(i => i.dept === 'Door').reduce((s, i) => s + i.qty, 0);
 
@@ -677,7 +688,6 @@
             document.getElementById('kpiScrap').innerText = scrapAll.toLocaleString();
             document.getElementById('kpiRateAll').innerText = rateAll + '%';
             
-            // แสดงผล Line A และ Door KPIs (พร้อมยอดผลิต)
             document.getElementById('kpiRateLineA').innerText = rateLineA + '%';
             document.getElementById('kpiLineASub').innerText = `${scrapLineA} ชิ้น (ผลิต ${prodLineA.toLocaleString()})`;
             document.getElementById('kpiRateDoor').innerText = rateDoor + '%';
