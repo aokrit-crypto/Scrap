@@ -126,19 +126,9 @@
                 </div>
             </div>
 
-            <!-- KPI Cards Row -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
-                    <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-500">ยอดผลิตรวมต่อวัน</span>
-                        <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center text-xs"><i class="fa-solid fa-boxes-stacked"></i></div>
-                    </div>
-                    <div class="mt-2">
-                        <span id="kpiProd" class="text-2xl font-bold text-slate-800">3,600</span>
-                        <p class="text-[11px] text-slate-400 mt-0.5">ชิ้นรวมทุกกะ</p>
-                    </div>
-                </div>
-
+            <!-- KPI Cards Row (6 ช่อง: รวม + %รวม + Line A ชิ้น/% + Door ชิ้น/% + กะ D + กะ N) -->
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+                <!-- 1. จำนวนของเสียรวม -->
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <span class="text-xs font-semibold text-slate-500">จำนวนของเสียรวม</span>
@@ -146,10 +136,11 @@
                     </div>
                     <div class="mt-2">
                         <span id="kpiScrap" class="text-2xl font-bold text-red-600">66</span>
-                        <p class="text-[11px] text-slate-400 mt-0.5">ชิ้น</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">ชิ้น (ผลิต <span id="kpiProd">3,600</span>)</p>
                     </div>
                 </div>
 
+                <!-- 2. % ของเสียรวม -->
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <span class="text-xs font-semibold text-slate-500">% ของเสียรวม</span>
@@ -157,28 +148,58 @@
                     </div>
                     <div class="mt-2">
                         <span id="kpiRateAll" class="text-2xl font-bold text-amber-600">1.83%</span>
-                        <p id="kpiStatusText" class="text-[11px] text-amber-600 font-semibold mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i> สูงกว่าเป้าหมาย (&gt;1.50%)</p>
+                        <p id="kpiStatusText" class="text-[10px] text-amber-600 font-semibold mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i> สูงกว่าเป้า (&gt;1.5%)</p>
                     </div>
                 </div>
 
+                <!-- 3. ตู้ Line A (แยกชิ้นและ %) -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-semibold text-slate-500">ตู้ Line A</span>
+                        <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Line A</span>
+                    </div>
+                    <div class="mt-2">
+                        <div class="flex items-baseline gap-1">
+                            <span id="kpiRateLineA" class="text-xl font-bold text-blue-600">0.83%</span>
+                        </div>
+                        <p id="kpiScrapLineA" class="text-[11px] text-slate-500 mt-0.5">15 ชิ้น</p>
+                    </div>
+                </div>
+
+                <!-- 4. Door (แยกชิ้นและ %) -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-semibold text-slate-500">Door</span>
+                        <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Door</span>
+                    </div>
+                    <div class="mt-2">
+                        <div class="flex items-baseline gap-1">
+                            <span id="kpiRateDoor" class="text-xl font-bold text-purple-600">1.00%</span>
+                        </div>
+                        <p id="kpiScrapDoor" class="text-[11px] text-slate-500 mt-0.5">51 ชิ้น</p>
+                    </div>
+                </div>
+
+                <!-- 5. % กะเช้า (D) -->
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <span class="text-xs font-semibold text-slate-500">% กะเช้า (D)</span>
-                        <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Shift D</span>
+                        <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Shift D</span>
                     </div>
                     <div class="mt-2">
-                        <span id="kpiRateD" class="text-2xl font-bold text-amber-600">1.28%</span>
+                        <span id="kpiRateD" class="text-xl font-bold text-amber-600">1.28%</span>
                         <p id="kpiScrapD" class="text-[11px] text-slate-400 mt-0.5">23 ชิ้น</p>
                     </div>
                 </div>
 
+                <!-- 6. % กะดึก (N) -->
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <span class="text-xs font-semibold text-slate-500">% กะดึก (N)</span>
-                        <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Shift N</span>
+                        <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Shift N</span>
                     </div>
                     <div class="mt-2">
-                        <span id="kpiRateN" class="text-2xl font-bold text-indigo-600">2.39%</span>
+                        <span id="kpiRateN" class="text-xl font-bold text-indigo-600">2.39%</span>
                         <p id="kpiScrapN" class="text-[11px] text-slate-400 mt-0.5">43 ชิ้น</p>
                     </div>
                 </div>
@@ -186,7 +207,7 @@
 
             <!-- Main Layout: Pareto Chart & Dual Tables (Line A & Door - ขยายใหญ่ขึ้นเต็มตา) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- Pareto Chart (7 Cols -> ปรับเป็น 7 Cols) -->
+                <!-- Pareto Chart (7 Cols) -->
                 <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-center mb-4">
@@ -202,7 +223,7 @@
                     </div>
                 </div>
 
-                <!-- ตารางแยกหน่วยงาน (5 Cols ขยายกว้างและสูงขึ้นชัดเจน) -->
+                <!-- ตารางแยกหน่วยงาน (5 Cols) -->
                 <div class="lg:col-span-5 space-y-4">
                     <!-- ตู้ Line A Table -->
                     <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
@@ -641,16 +662,32 @@
             let scrapN = rawData.filter(i => i.shift === 'N').reduce((s, i) => s + i.qty, 0);
             let scrapAll = scrapD + scrapN;
 
+            // คำนวณแยกตามหน่วยงาน (Line A และ Door)
+            let scrapLineA = rawData.filter(i => i.dept === 'Line A').reduce((s, i) => s + i.qty, 0);
+            let scrapDoor = rawData.filter(i => i.dept === 'Door').reduce((s, i) => s + i.qty, 0);
+
             let prodD = Math.round(baseProduction / 2);
             let prodN = Math.round(baseProduction / 2);
+            // สมมติสัดส่วนยอดผลิตแยกตามหน่วยงานครึ่งต่อครึ่ง หรือคำนวณจากยอดรวม
+            let prodLineA = Math.round(baseProduction / 2);
+            let prodDoor = Math.round(baseProduction / 2);
 
             let rateD = prodD > 0 ? ((scrapD / prodD) * 100).toFixed(2) : '0.00';
             let rateN = prodN > 0 ? ((scrapN / prodN) * 100).toFixed(2) : '0.00';
             let rateAll = baseProduction > 0 ? ((scrapAll / baseProduction) * 100).toFixed(2) : '0.00';
+            let rateLineA = prodLineA > 0 ? ((scrapLineA / prodLineA) * 100).toFixed(2) : '0.00';
+            let rateDoor = prodDoor > 0 ? ((scrapDoor / prodDoor) * 100).toFixed(2) : '0.00';
 
             document.getElementById('kpiProd').innerText = baseProduction.toLocaleString();
             document.getElementById('kpiScrap').innerText = scrapAll.toLocaleString();
             document.getElementById('kpiRateAll').innerText = rateAll + '%';
+            
+            // แสดงผล Line A และ Door KPIs
+            document.getElementById('kpiRateLineA').innerText = rateLineA + '%';
+            document.getElementById('kpiScrapLineA').innerText = `${scrapLineA} ชิ้น`;
+            document.getElementById('kpiRateDoor').innerText = rateDoor + '%';
+            document.getElementById('kpiScrapDoor').innerText = `${scrapDoor} ชิ้น`;
+
             document.getElementById('kpiRateD').innerText = rateD + '%';
             document.getElementById('kpiScrapD').innerText = `${scrapD} ชิ้น`;
             document.getElementById('kpiRateN').innerText = rateN + '%';
@@ -660,13 +697,13 @@
             let statusEl = document.getElementById('kpiStatusText');
             let bannerStatus = document.getElementById('bannerStatusRate');
             if (parseFloat(rateAll) <= 1.50) {
-                statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> ในเกณฑ์ดี (<1.50%)`;
-                statusEl.className = "text-[11px] text-emerald-600 font-semibold mt-0.5";
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> ในเกณฑ์ดี (<1.5%)`;
+                statusEl.className = "text-[10px] text-emerald-600 font-semibold mt-0.5";
                 bannerStatus.innerHTML = `${rateAll}% <span class="text-xs font-normal text-slate-200">(อยู่ในเกณฑ์เป้าหมาย)</span>`;
                 bannerStatus.className = "text-lg font-bold text-emerald-400";
             } else {
-                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> เกินเป้าหมาย (>1.50%)`;
-                statusEl.className = "text-[11px] text-amber-600 font-semibold mt-0.5";
+                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> เกินเป้าหมาย (>1.5%)`;
+                statusEl.className = "text-[10px] text-amber-600 font-semibold mt-0.5";
                 bannerStatus.innerHTML = `${rateAll}% <span class="text-xs font-normal text-amber-200">(เกินเป้าหมาย)</span>`;
                 bannerStatus.className = "text-lg font-bold text-amber-400";
             }
