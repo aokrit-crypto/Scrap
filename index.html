@@ -17,7 +17,6 @@
     
     <style>
         body { font-family: 'Plus Jakarta Sans', 'Sarabun', sans-serif; }
-        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 antialiased min-h-screen flex flex-col md:flex-row">
@@ -50,7 +49,7 @@
             <!-- Navigation Tabs -->
             <nav class="space-y-1.5 text-sm font-medium">
                 <button onclick="switchTab('executive')" id="nav-executive" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl bg-blue-600 text-white font-semibold transition text-left shadow-lg shadow-blue-600/20">
-                    <i class="fa-solid fa-gauge-high w-5"></i> ภาพรวมผู้บริหาร (Overview)
+                    <i class="fa-solid fa-gauge-high w-5"></i> Dashboard ข้อมูล Scrap
                 </button>
                 <button onclick="switchTab('shift')" id="nav-shift" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition text-left">
                     <i class="fa-solid fa-scale-balanced w-5"></i> เปรียบเทียบกะ (Shift Analysis)
@@ -86,7 +85,7 @@
         <header class="flex flex-wrap justify-between items-center gap-4 bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xl">
             <div>
                 <div class="flex items-center gap-3">
-                    <h2 class="text-xl md:text-2xl font-bold text-white tracking-tight">Executive Summary Dashboard</h2>
+                    <h2 class="text-xl md:text-2xl font-bold text-white tracking-tight">Executive Scrap Analytics Dashboard</h2>
                     <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1.5">
                         <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> วันที่ 1/10/2026
                     </span>
@@ -317,7 +316,6 @@
     <script>
         Chart.register(ChartDataLabels);
 
-        // Dataset ตั้งต้นวันที่ 1 ตุลาคม 2026 (1-10-26)
         let dataset = [
             { Shift: 'Day shift', Date: '2026-10-01', ยอดผลิตรวม: 3612, ยอดผลิตต่อกะ: 1806, Model: 'FUF 22 D', จำนวนScrap: 2, Problem: 'โฟมไม่เต็มตู้', สาเหตุ: '-', ผู้รับผิดชอบ: '-', หน่วยงาน: 'PD' },
             { Shift: 'Day shift', Date: '2026-10-01', ยอดผลิตรวม: null, ยอดผลิตต่อกะ: null, Model: 'EHRA 147 ONL BL', จำนวนScrap: 1, Problem: 'ตู้เข้า Jig ลงไม่สุด', สาเหตุ: '-', ผู้รับผิดชอบ: 'K.นที', หน่วยงาน: 'PD' },
@@ -423,7 +421,6 @@
             document.getElementById('execScrapRate').innerText = `${scrapRate}%`;
             document.getElementById('recordCountBadge').innerText = `${filtered.length} รายการ`;
 
-            // Populate Table
             const tbody = document.getElementById('executiveTableBody');
             tbody.innerHTML = '';
             filtered.forEach(item => {
@@ -452,7 +449,6 @@
         }
 
         function renderExecutiveCharts(dayScrap, nightScrap) {
-            // Shift Bar Chart
             const ctxShift = document.getElementById('execShiftChart').getContext('2d');
             if (execShiftChartInst) execShiftChartInst.destroy();
 
@@ -479,7 +475,6 @@
                 }
             });
 
-            // Department Doughnut Chart
             let deptMap = {};
             dataset.forEach(i => {
                 let d = i.หน่วยงาน || 'PD';
@@ -533,7 +528,6 @@
                 cumPercentages.push(cumPct);
             });
 
-            // Render Pareto Table
             const tbody = document.getElementById('paretoTableBody');
             tbody.innerHTML = '';
             sorted.forEach(([prob, data], idx) => {
@@ -550,7 +544,6 @@
                 `;
             });
 
-            // Render Pareto Chart with Chart.js (Dual axis: Bar for quantity, Line for Cumulative %)
             const ctxPareto = document.getElementById('paretoChart').getContext('2d');
             if (paretoChartInst) paretoChartInst.destroy();
 
