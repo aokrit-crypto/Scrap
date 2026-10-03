@@ -417,7 +417,6 @@
     <script>
         Chart.register(ChartDataLabels);
 
-        // ข้อมูลเฉพาะ Line A จากไฟล์ Scrap 20-9-26.xlsx (ตัดส่วน Door ออก)
         let defaultRawData = [
             { problem: "Door Switch แผ่นหลังไม่มีสายไฟ", shift: "N", qty: 1, dept: "Line A", owner: "K.ธงชัย", deptName: "PDA" },
             { problem: "โฟมรั่ว+ท่อตัน", shift: "N", qty: 2, dept: "Line A", owner: "K.สราวุฒิ", deptName: "PDA" },
@@ -435,16 +434,16 @@
         ];
 
         let rawData = [];
-        let baseProduction = 1800; // ยอดผลิตรวมต่อวันเฉพาะ Line A
+        let baseProduction = 1800; 
         let dashboardDate = "20/9/2026";
         let dashboardDateTextFull = "20 กันยายน 2026";
 
         function loadStoredData() {
-            const savedData = localStorage.getItem('scrap_dashboard_data_linea_v1');
-            const savedProd = localStorage.getItem('scrap_dashboard_prod_linea_v1');
-            const savedFileName = localStorage.getItem('scrap_dashboard_filename_linea_v1');
-            const savedDate = localStorage.getItem('scrap_dashboard_date_str_linea_v1');
-            const savedDateFull = localStorage.getItem('scrap_dashboard_date_full_linea_v1');
+            const savedData = localStorage.getItem('scrap_dashboard_data_linea_v2');
+            const savedProd = localStorage.getItem('scrap_dashboard_prod_linea_v2');
+            const savedFileName = localStorage.getItem('scrap_dashboard_filename_linea_v2');
+            const savedDate = localStorage.getItem('scrap_dashboard_date_str_linea_v2');
+            const savedDateFull = localStorage.getItem('scrap_dashboard_date_full_linea_v2');
 
             if (savedData) {
                 try { rawData = JSON.parse(savedData); } catch (e) { rawData = [...defaultRawData]; }
@@ -461,10 +460,10 @@
         }
 
         function saveToLocalStorage() {
-            localStorage.setItem('scrap_dashboard_data_linea_v1', JSON.stringify(rawData));
-            localStorage.setItem('scrap_dashboard_prod_linea_v1', baseProduction);
-            localStorage.setItem('scrap_dashboard_date_str_linea_v1', dashboardDate);
-            localStorage.setItem('scrap_dashboard_date_full_linea_v1', dashboardDateTextFull);
+            localStorage.setItem('scrap_dashboard_data_linea_v2', JSON.stringify(rawData));
+            localStorage.setItem('scrap_dashboard_prod_linea_v2', baseProduction);
+            localStorage.setItem('scrap_dashboard_date_str_linea_v2', dashboardDate);
+            localStorage.setItem('scrap_dashboard_date_full_linea_v2', dashboardDateTextFull);
         }
 
         function updateDateUI() {
@@ -520,6 +519,7 @@
             alert("บันทึกข้อมูล Line A เรียบร้อยแล้ว!");
         }
 
+        // ฟังก์ชันอ่านและจัดการไฟล์ Excel โดยรองรับ Forward Fill แถวที่เว้นว่างในไฟล์ Excel
         function handleExcelFile(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -537,28 +537,40 @@
                         let parsedData = [];
                         let foundProduction = null;
                         let foundDate = null;
+                        let lastLine = "Line A";
+                        let lastDate = "20/9/2026";
 
                         jsonSheet.forEach(row => {
-                            let problem = row.problem || row['Problem'] || row['รายการปัญหา'] || row['DEFECT'];
-                            let shift = row.shift || row['Shift'] || row['กะ'] || 'D';
-                            let qty = parseInt(row.qty || row['จำนวน Scrap'] || row['จำนวน'] || row['Qty'] || 1);
-                            let deptInput = row.line || row['Line'] || row['Location'] || row['หน่วยงาน'] || 'Line A';
-                            let owner = row.owner || row['ชื่อผู้รับผิดชอบ'] || 'ไม่ระบุ';
-                            let deptName = row.deptName || row['แผนก'] || 'PDA';
-                            let prodVal = row.target || row['Target by daily'] || row['ยอดผลิต'];
-                            let dateVal = row.date || row['Date'] || row['วันที่'];
-
-                            // กรองเอาเฉพาะข้อมูลที่เป็นของ Line A เท่านั้น
-                            let dStr = String(deptInput).trim().toLowerCase();
-                            if (dStr.includes('door') || dStr.includes('rac5')) {
-                                return; // ข้ามข้อมูล Door หากหลุดเข้ามาในไฟล์
+                            let lineVal = row.line || row['Line'] || row['ตู้'] || row['Location'];
+                            if (lineVal && String(lineVal).trim() !== "") {
+                                lastLine = String(lineVal).trim();
                             }
 
-                            if (prodVal && !isNaN(parseInt(prodVal))) foundProduction = parseInt(prodVal);
-                            if (dateVal) foundDate = String(dateVal).trim();
+                            let dateVal = row.date || row['Date'] || row['วันที่'];
+                            if (dateVal && String(dateVal).trim() !== "") {
+                                lastDate = String(dateVal).trim();
+                            }
 
+                            let prodVal = row.target || row['Target by daily'] || row['ยอดผลิต'];
+                            if (prodVal && !isNaN(parseInt(prodVal))) {
+                                foundProduction = parseInt(prodVal);
+                            }
+
+                            // ตรวจสอบว่าเป็นข้อมูลของ Door หรือไม่ หากใช่ให้ข้ามไป
+                            let currentLineCheck = lastLine.toLowerCase();
+                            if (currentLineCheck.includes('door') || currentLineCheck.includes('rac5')) {
+                                return; 
+                            }
+
+                            let problem = row.problem || row['Problem'] || row['รายการปัญหา'] || row['DEFECT'];
+                            let shiftCol = row.shift || row['Shift'] || row['กะ'] || row['กะเช้า Day'] || row['กะเช้า Day / กะดึก N'];
+                            let qty = parseInt(row.qty || row['จำนวน Scrap'] || row['จำนวน'] || row['Qty'] || 1);
+                            let owner = row.owner || row['ชื่อผู้รับผิดชอบ'] || 'ไม่ระบุ';
+                            let deptName = row.deptName || row['แผนก'] || 'PDA';
+
+                            // ตรวจจับกะ D หรือ N จากข้อความ
                             let shiftFormatted = 'D';
-                            let sStr = String(shift).trim().toUpperCase();
+                            let sStr = String(shiftCol).trim().toUpperCase();
                             if (sStr.includes('N') || sStr.includes('ดึก')) {
                                 shiftFormatted = 'N';
                             }
@@ -584,20 +596,20 @@
                             }
 
                             saveToLocalStorage();
-                            localStorage.setItem('scrap_dashboard_filename_linea_v1', file.name);
+                            localStorage.setItem('scrap_dashboard_filename_linea_v2', file.name);
                             document.getElementById('sidebarFileName').innerText = file.name;
                             document.getElementById('bannerFileLabel').innerText = `ข้อมูลจากไฟล์: ${file.name} | ยอดผลิตรวม Line A ${baseProduction.toLocaleString()} ชิ้น`;
 
                             updateDateUI();
                             updateDashboard();
-                            alert(`อัปโหลดและกรองข้อมูลเฉพาะ Line A จากไฟล์ "${file.name}" สำเร็จเรียบร้อยแล้ว!`);
+                            alert(`อ่านไฟล์และประมวลผลข้อมูล Line A จากไฟล์ "${file.name}" จำนวน ${parsedData.length} รายการสำเร็จ!`);
                         } else {
-                            alert("ไม่พบข้อมูล Line A ในไฟล์ Excel หรือข้อมูลทั้งหมดเป็น Door");
+                            alert("ไม่พบรายการของเสียของ Line A ในไฟล์ Excel ที่ระบุ");
                         }
                     }
                 } catch (err) {
                     console.error(err);
-                    alert("เกิดข้อผิดพลาดในการอ่านไฟล์ Excel");
+                    alert("เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์");
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -647,10 +659,8 @@
             document.getElementById('shiftN-scrap').innerText = scrapN + ' ชิ้น';
             document.getElementById('shiftN-rate').innerText = rateN + '%';
 
-            // เรนเดอร์ตาราง Line A ตามฟิลเตอร์กะ
             renderDepartmentTable('tableLineABody', document.getElementById('shiftFilterLineA').value);
 
-            // Pareto ภาพรวม Line A
             let filtered = rawData.filter(item => shiftFilter === 'ALL' || item.shift === shiftFilter);
             let aggregated = {};
             filtered.forEach(item => {
