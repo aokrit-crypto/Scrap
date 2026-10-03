@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Admin Dashboard - Scrap Analysis System</title>
+    <title>Modern Admin Dashboard - Scrap Analysis System (Line A)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js & Plugins -->
@@ -31,7 +31,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-white text-base leading-tight">SCRAP ADMIN</h1>
-                    <span class="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Line A & Door Analytics</span>
+                    <span class="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Line A Analytics</span>
                 </div>
             </div>
 
@@ -71,8 +71,8 @@
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs">A</div>
                 <div class="text-xs">
-                    <p class="font-semibold text-slate-200">Line A & Door</p>
-                    <p class="text-[10px] text-slate-400">Multi-Section System</p>
+                    <p class="font-semibold text-slate-200">Line A System</p>
+                    <p class="text-[10px] text-slate-400">Single-Section Analytics</p>
                 </div>
             </div>
         </div>
@@ -85,12 +85,12 @@
         <header class="bg-white border-b border-slate-200 px-6 py-4 flex flex-wrap justify-between items-center gap-4 sticky top-0 z-30">
             <div>
                 <div class="flex items-center gap-2">
-                    <h2 class="text-xl font-bold text-slate-800">Scrap Rate Dashboard (ตู้ A & Door)</h2>
+                    <h2 class="text-xl font-bold text-slate-800">Scrap Rate Dashboard (ตู้ Line A)</h2>
                     <span id="topDateBadge" class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-blue-200 flex items-center gap-1.5">
                         <i class="fa-solid fa-calendar-day text-blue-600"></i> ประจำวันที่ 20/9/2026
                     </span>
                 </div>
-                <p class="text-xs text-slate-500 mt-0.5">วิเคราะห์ข้อมูลของเสียแยกตามหน่วยงาน ยอดผลิตรายวัน และกะ D/N</p>
+                <p class="text-xs text-slate-500 mt-0.5">วิเคราะห์ข้อมูลของเสีย Line A แยกตามหน่วยงาน ยอดผลิตรายวัน และกะ D/N</p>
             </div>
 
             <div class="flex items-center gap-3">
@@ -115,14 +115,14 @@
             <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-5 rounded-2xl shadow-sm flex flex-wrap justify-between items-center gap-4">
                 <div class="space-y-1">
                     <div class="flex items-center gap-2 text-blue-300 text-xs font-semibold uppercase tracking-wider">
-                        <i class="fa-solid fa-circle-info"></i> Daily Scrap Summary Analysis
+                        <i class="fa-solid fa-circle-info"></i> Daily Scrap Summary Analysis (Line A)
                     </div>
-                    <h3 id="bannerTitle" class="text-lg md:text-xl font-bold">รายงานสรุปของเสียประจำวันที่ 20 กันยายน 2026</h3>
+                    <h3 id="bannerTitle" class="text-lg md:text-xl font-bold">รายงานสรุปของเสีย Line A ประจำวันที่ 20 กันยายน 2026</h3>
                     <p id="bannerFileLabel" class="text-xs text-slate-300">ข้อมูลจากไฟล์ Excel: Scrap 20-9-26.xlsx</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 text-right">
-                    <p class="text-[10px] text-slate-300">สถานะ Scrap Rate ภาพรวม</p>
-                    <p id="bannerStatusRate" class="text-lg font-bold text-amber-400">1.83%</p>
+                    <p class="text-[10px] text-slate-300">สถานะ Scrap Rate Line A</p>
+                    <p id="bannerStatusRate" class="text-lg font-bold text-amber-400">0.93%</p>
                 </div>
             </div>
 
@@ -134,7 +134,7 @@
                         <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center text-xs"><i class="fa-solid fa-boxes-stacked"></i></div>
                     </div>
                     <div class="mt-2">
-                        <span id="kpiProd" class="text-2xl font-bold text-slate-800">3,600</span>
+                        <span id="kpiProd" class="text-2xl font-bold text-slate-800">1,800</span>
                         <p class="text-[11px] text-slate-400 mt-0.5">ชิ้นรวมทุกกะ</p>
                     </div>
                 </div>
@@ -145,7 +145,7 @@
                         <div class="w-7 h-7 rounded-lg bg-red-50 text-red-600 flex items-center justify-center text-xs"><i class="fa-solid fa-trash-can"></i></div>
                     </div>
                     <div class="mt-2">
-                        <span id="kpiScrap" class="text-2xl font-bold text-red-600">66</span>
+                        <span id="kpiScrap" class="text-2xl font-bold text-red-600">17</span>
                         <p class="text-[11px] text-slate-400 mt-0.5">ชิ้น</p>
                     </div>
                 </div>
@@ -153,11 +153,11 @@
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <span class="text-xs font-semibold text-slate-500">% ของเสียรวม</span>
-                        <div class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs"><i class="fa-solid fa-percent"></i></div>
+                        <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs"><i class="fa-solid fa-percent"></i></div>
                     </div>
                     <div class="mt-2">
-                        <span id="kpiRateAll" class="text-2xl font-bold text-amber-600">1.83%</span>
-                        <p id="kpiStatusText" class="text-[11px] text-amber-600 font-semibold mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i> สูงกว่าเป้าหมาย (&gt;1.50%)</p>
+                        <span id="kpiRateAll" class="text-2xl font-bold text-emerald-600">0.94%</span>
+                        <p id="kpiStatusText" class="text-[11px] text-emerald-600 font-semibold mt-0.5"><i class="fa-solid fa-circle-check"></i> ในเกณฑ์ดี (&lt;1.50%)</p>
                     </div>
                 </div>
 
@@ -167,8 +167,8 @@
                         <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Shift D</span>
                     </div>
                     <div class="mt-2">
-                        <span id="kpiRateD" class="text-2xl font-bold text-amber-600">1.28%</span>
-                        <p id="kpiScrapD" class="text-[11px] text-slate-400 mt-0.5">23 ชิ้น</p>
+                        <span id="kpiRateD" class="text-2xl font-bold text-amber-600">0.56%</span>
+                        <p id="kpiScrapD" class="text-[11px] text-slate-400 mt-0.5">5 ชิ้น</p>
                     </div>
                 </div>
 
@@ -178,23 +178,23 @@
                         <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Shift N</span>
                     </div>
                     <div class="mt-2">
-                        <span id="kpiRateN" class="text-2xl font-bold text-indigo-600">2.39%</span>
-                        <p id="kpiScrapN" class="text-[11px] text-slate-400 mt-0.5">43 ชิ้น</p>
+                        <span id="kpiRateN" class="text-2xl font-bold text-indigo-600">1.33%</span>
+                        <p id="kpiScrapN" class="text-[11px] text-slate-400 mt-0.5">12 ชิ้น</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Main Layout: Pareto Chart & Dual Tables (Line A & Door) -->
+            <!-- Main Layout: Pareto Chart & Table (Line A Only) -->
             <div class="grid grid-cols-1 lg:grid-cols-10 gap-6">
                 <!-- Pareto Chart (7 Cols) -->
                 <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-center mb-4">
                             <div>
-                                <h3 class="font-bold text-slate-800 text-base">Pareto Chart TOP Defects (ภาพรวม)</h3>
-                                <p class="text-xs text-slate-400">กราฟพาเรโตแสดงสัดส่วนของเสียรวมทุกหน่วยงานตามไฟล์ Excel</p>
+                                <h3 class="font-bold text-slate-800 text-base">Pareto Chart TOP Defects (Line A)</h3>
+                                <p class="text-xs text-slate-400">กราฟพาเรโตแสดงสัดส่วนของเสียเฉพาะ Line A ตามไฟล์ Excel</p>
                             </div>
-                            <span class="bg-blue-50 text-blue-600 text-xs font-semibold px-2.5 py-1 rounded-lg">ภาพรวมระบบ</span>
+                            <span class="bg-blue-50 text-blue-600 text-xs font-semibold px-2.5 py-1 rounded-lg">Line A</span>
                         </div>
                         <div class="relative h-80">
                             <canvas id="paretoChart"></canvas>
@@ -202,20 +202,19 @@
                     </div>
                 </div>
 
-                <!-- ตารางแยกหน่วยงาน (3 Cols) พร้อมฟิลเตอร์กะ -->
+                <!-- ตารางแยกปัญหา Line A (3 Cols) พร้อมฟิลเตอร์กะ -->
                 <div class="lg:col-span-3 space-y-6">
-                    <!-- ตู้ Line A Table -->
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between h-full">
                         <div>
                             <div class="flex justify-between items-center mb-2">
-                                <h3 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-box text-blue-600"></i> ตู้ Line A</h3>
+                                <h3 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-box text-blue-600"></i> รายการปัญหา Line A</h3>
                                 <select id="shiftFilterLineA" onchange="updateDashboard()" class="bg-slate-100 text-slate-700 text-[11px] font-semibold rounded px-1.5 py-0.5 border-0 outline-none cursor-pointer">
                                     <option value="ALL">ทุกกะ</option>
                                     <option value="D">เช้า (D)</option>
                                     <option value="N">ดึก (N)</option>
                                 </select>
                             </div>
-                            <div class="overflow-y-auto max-h-[140px] border border-slate-100 rounded-xl">
+                            <div class="overflow-y-auto max-h-[300px] border border-slate-100 rounded-xl">
                                 <table class="w-full text-[11px] text-left text-slate-600">
                                     <thead class="text-[10px] text-slate-700 uppercase bg-slate-100 sticky top-0">
                                         <tr>
@@ -231,34 +230,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Door Table -->
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <h3 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-door-closed text-indigo-600"></i> Door</h3>
-                                <select id="shiftFilterDoor" onchange="updateDashboard()" class="bg-slate-100 text-slate-700 text-[11px] font-semibold rounded px-1.5 py-0.5 border-0 outline-none cursor-pointer">
-                                    <option value="ALL">ทุกกะ</option>
-                                    <option value="D">เช้า (D)</option>
-                                    <option value="N">ดึก (N)</option>
-                                </select>
-                            </div>
-                            <div class="overflow-y-auto max-h-[140px] border border-slate-100 rounded-xl">
-                                <table class="w-full text-[11px] text-left text-slate-600">
-                                    <thead class="text-[10px] text-slate-700 uppercase bg-slate-100 sticky top-0">
-                                        <tr>
-                                            <th class="py-2 px-2">รายการปัญหา</th>
-                                            <th class="py-2 px-1 text-center">กะ D</th>
-                                            <th class="py-2 px-1 text-center">กะ N</th>
-                                            <th class="py-2 px-1 text-right">รวม</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableDoorBody" class="divide-y divide-slate-100">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -266,13 +237,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center justify-between">
                     <div class="w-full text-left">
-                        <h3 class="font-bold text-slate-800 text-base">Overall Scrap Gauge</h3>
-                        <p class="text-xs text-slate-400">ระดับ % ของเสียรวม</p>
+                        <h3 class="font-bold text-slate-800 text-base">Line A Scrap Gauge</h3>
+                        <p class="text-xs text-slate-400">ระดับ % ของเสียรวม Line A</p>
                     </div>
                     <div class="relative w-full h-48 flex justify-center items-center mt-2">
                         <canvas id="gaugeChart"></canvas>
                         <div class="absolute bottom-4 text-center">
-                            <span id="gaugeText" class="text-3xl font-bold text-slate-800">1.83%</span>
+                            <span id="gaugeText" class="text-3xl font-bold text-slate-800">0.94%</span>
                             <p class="text-[11px] text-slate-400">Target MAX 1.50%</p>
                         </div>
                     </div>
@@ -281,7 +252,7 @@
                 <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <h3 class="font-bold text-slate-800 text-base">เปรียบเทียบ กะ D vs กะ N</h3>
+                            <h3 class="font-bold text-slate-800 text-base">เปรียบเทียบ กะ D vs กะ N (Line A)</h3>
                         </div>
                         <div class="relative h-52">
                             <canvas id="shiftChart"></canvas>
@@ -291,7 +262,7 @@
 
                 <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div>
-                        <h3 class="font-bold text-slate-800 text-base mb-1">แนวโน้มปัญหาของเสีย</h3>
+                        <h3 class="font-bold text-slate-800 text-base mb-1">แนวโน้มปัญหาของเสีย Line A</h3>
                         <p class="text-xs text-slate-400 mb-2">เรียงลำดับปริมาณปัญหาตามไฟล์ Excel</p>
                         <div class="relative h-52">
                             <canvas id="areaLineChart"></canvas>
@@ -310,9 +281,9 @@
 
                 <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div>
-                        <h3 class="font-bold text-slate-800 text-base mb-1">ของเสียตามหน่วยงาน (Line A vs Door)</h3>
-                        <p class="text-xs text-slate-400 mb-2">จำแนกตามส่วนงานผลิต</p>
-                        <div class="relative h-52">
+                        <h3 class="font-bold text-slate-800 text-base mb-1">สถานะยอดผลิต vs ของเสีย</h3>
+                        <p class="text-xs text-slate-400 mb-2">ภาพรวมกะการผลิต Line A</p>
+                        <div class="relative h-52 flex items-center justify-center">
                             <canvas id="deptChart"></canvas>
                         </div>
                     </div>
@@ -332,24 +303,24 @@
         <!-- TAB 2: SHIFT COMPARISON VIEW -->
         <div id="tab-shift" class="p-6 max-w-7xl mx-auto space-y-6 tab-content hidden">
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <h3 class="text-lg font-bold text-slate-800 mb-2"><i class="fa-solid fa-clock-rotate-left text-blue-600"></i> วิเคราะห์เปรียบเทียบกะการผลิต (Shift D vs N)</h3>
+                <h3 class="text-lg font-bold text-slate-800 mb-2"><i class="fa-solid fa-clock-rotate-left text-blue-600"></i> วิเคราะห์เปรียบเทียบกะการผลิต Line A (Shift D vs N)</h3>
                 <p class="text-xs text-slate-500 mb-6">รายละเอียดเปรียบเทียบสถิติของเสียระหว่างกะเช้า (Day) และกะดึก (Night)</p>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div class="bg-amber-50/50 p-5 rounded-2xl border border-amber-200">
                         <h4 class="font-bold text-amber-900 text-sm mb-3">☀️ กะเช้า (Day Shift - D)</h4>
                         <ul class="space-y-2 text-xs text-slate-700">
-                            <li class="flex justify-between"><span>ยอดผลิต:</span> <strong id="shiftD-prod">1,800 ชิ้น</strong></li>
-                            <li class="flex justify-between"><span>ของเสียรวม:</span> <strong id="shiftD-scrap" class="text-amber-700">23 ชิ้น</strong></li>
-                            <li class="flex justify-between"><span>Scrap Rate:</span> <strong id="shiftD-rate" class="text-amber-700">1.28%</strong></li>
+                            <li class="flex justify-between"><span>ยอดผลิต:</span> <strong id="shiftD-prod">900 ชิ้น</strong></li>
+                            <li class="flex justify-between"><span>ของเสียรวม:</span> <strong id="shiftD-scrap" class="text-amber-700">5 ชิ้น</strong></li>
+                            <li class="flex justify-between"><span>Scrap Rate:</span> <strong id="shiftD-rate" class="text-amber-700">0.56%</strong></li>
                         </ul>
                     </div>
                     <div class="bg-indigo-50/50 p-5 rounded-2xl border border-indigo-200">
                         <h4 class="font-bold text-indigo-900 text-sm mb-3">🌙 กะดึก (Night Shift - N)</h4>
                         <ul class="space-y-2 text-xs text-slate-700">
-                            <li class="flex justify-between"><span>ยอดผลิต:</span> <strong id="shiftN-prod">1,800 ชิ้น</strong></li>
-                            <li class="flex justify-between"><span>ของเสียรวม:</span> <strong id="shiftN-scrap" class="text-indigo-700">43 ชิ้น</strong></li>
-                            <li class="flex justify-between"><span>Scrap Rate:</span> <strong id="shiftN-rate" class="text-indigo-700">2.39%</strong></li>
+                            <li class="flex justify-between"><span>ยอดผลิต:</span> <strong id="shiftN-prod">900 ชิ้น</strong></li>
+                            <li class="flex justify-between"><span>ของเสียรวม:</span> <strong id="shiftN-scrap" class="text-indigo-700">12 ชิ้น</strong></li>
+                            <li class="flex justify-between"><span>Scrap Rate:</span> <strong id="shiftN-rate" class="text-indigo-700">1.33%</strong></li>
                         </ul>
                     </div>
                 </div>
@@ -363,8 +334,8 @@
         <!-- TAB 3: DEFECT PARETO VIEW -->
         <div id="tab-pareto" class="p-6 max-w-7xl mx-auto space-y-6 tab-content hidden">
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <h3 class="text-lg font-bold text-slate-800 mb-2"><i class="fa-solid fa-triangle-exclamation text-red-600"></i> ตารางวิเคราะห์พาเรโตเชิงลึก (Pareto Analysis & Responsibility)</h3>
-                <p class="text-xs text-slate-500 mb-6">ตารางวิเคราะห์ความถี่ ผลกระทบ 80/20 Rule พร้อมระบุหน่วยงานและผู้รับผิดชอบหลักตามไฟล์ Excel</p>
+                <h3 class="text-lg font-bold text-slate-800 mb-2"><i class="fa-solid fa-triangle-exclamation text-red-600"></i> ตารางวิเคราะห์พาเรโตเชิงลึก Line A (Pareto Analysis & Responsibility)</h3>
+                <p class="text-xs text-slate-500 mb-6">ตารางวิเคราะห์ความถี่ ผลกระทบ 80/20 Rule พร้อมระบุหน่วยงานและผู้รับผิดชอบหลัก Line A</p>
                 
                 <div class="overflow-x-auto">
                     <table class="w-full text-xs text-left text-slate-600 border border-slate-200 rounded-xl overflow-hidden">
@@ -391,7 +362,7 @@
     <div id="dataModal" class="fixed inset-0 bg-slate-900/60 hidden backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 relative">
             <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square text-blue-600"></i> เพิ่มข้อมูลของเสีย
+                <i class="fa-solid fa-pen-to-square text-blue-600"></i> เพิ่มข้อมูลของเสีย Line A
             </h3>
             <form id="scrapForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
                 <div class="grid grid-cols-2 gap-3">
@@ -404,21 +375,18 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">หน่วยงาน</label>
-                        <select id="inputDept" class="w-full border rounded-lg px-3 py-2 text-sm bg-slate-50">
-                            <option value="Line A">ตู้ Line A</option>
-                            <option value="Door">Door</option>
-                        </select>
+                        <input type="text" id="inputDept" readonly value="Line A" class="w-full border rounded-lg px-3 py-2 text-sm bg-slate-100 text-slate-500 cursor-not-allowed">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">ยอดผลิตรวมต่อวัน (Production Target)</label>
-                    <input type="number" id="inputProd" required value="3600" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ยอดผลิตรวมต่อวัน Line A (Production Target)</label>
+                    <input type="number" id="inputProd" required value="1800" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">ชื่อรายการปัญหา</label>
-                    <input type="text" id="inputProblem" required placeholder="เช่น ฝาบุบ, โฟมรั่ว" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="text" id="inputProblem" required placeholder="เช่น โฟมรั่ว, ถังในแตก" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
@@ -449,7 +417,7 @@
     <script>
         Chart.register(ChartDataLabels);
 
-        // ข้อมูลจริงจากไฟล์ Scrap 20-9-26.xlsx
+        // ข้อมูลเฉพาะ Line A จากไฟล์ Scrap 20-9-26.xlsx (ตัดส่วน Door ออก)
         let defaultRawData = [
             { problem: "Door Switch แผ่นหลังไม่มีสายไฟ", shift: "N", qty: 1, dept: "Line A", owner: "K.ธงชัย", deptName: "PDA" },
             { problem: "โฟมรั่ว+ท่อตัน", shift: "N", qty: 2, dept: "Line A", owner: "K.สราวุฒิ", deptName: "PDA" },
@@ -463,24 +431,20 @@
             { problem: "ถังในเป็นกลีบ", shift: "N", qty: 1, dept: "Line A", owner: "K.คมกฤษ", deptName: "TF" },
             { problem: "ข้างตุ้บุบ", shift: "N", qty: 2, dept: "Line A", owner: "K.ประเสริฐ", deptName: "PDA" },
             { problem: "แผ่นหน้ายุบ", shift: "N", qty: 2, dept: "Line A", owner: "K.ประเสริฐ", deptName: "PDA" },
-            { problem: "โฟมรั่ว Bottom", shift: "N", qty: 1, dept: "Line A", owner: "K.ธงชัย", deptName: "PDA" },
-            { problem: "ฝาบุบ", shift: "D", qty: 12, dept: "Door", owner: "K.นนทชัย / K.ประจักษ์", deptName: "Door / PDA" },
-            { problem: "ฝาบุบ", shift: "N", qty: 23, dept: "Door", owner: "K.ลัดดา / K.ปรีชา", deptName: "PDA" },
-            { problem: "ฝารอยขีด", shift: "N", qty: 10, dept: "Door", owner: "K.นนทชัย / K.ปรีชา", deptName: "Door / PDA" },
-            { problem: "ฝานูน", shift: "N", qty: 1, dept: "Door", owner: "K.นนทชัย", deptName: "Door" }
+            { problem: "โฟมรั่ว Bottom", shift: "N", qty: 1, dept: "Line A", owner: "K.ธงชัย", deptName: "PDA" }
         ];
 
         let rawData = [];
-        let baseProduction = 3600; // ยอดผลิตรวมต่อวันตาม Excel (Line A = 1800 + Door = 1800)
+        let baseProduction = 1800; // ยอดผลิตรวมต่อวันเฉพาะ Line A
         let dashboardDate = "20/9/2026";
         let dashboardDateTextFull = "20 กันยายน 2026";
 
         function loadStoredData() {
-            const savedData = localStorage.getItem('scrap_dashboard_data_v3');
-            const savedProd = localStorage.getItem('scrap_dashboard_prod_v3');
-            const savedFileName = localStorage.getItem('scrap_dashboard_filename_v3');
-            const savedDate = localStorage.getItem('scrap_dashboard_date_str_v3');
-            const savedDateFull = localStorage.getItem('scrap_dashboard_date_full_v3');
+            const savedData = localStorage.getItem('scrap_dashboard_data_linea_v1');
+            const savedProd = localStorage.getItem('scrap_dashboard_prod_linea_v1');
+            const savedFileName = localStorage.getItem('scrap_dashboard_filename_linea_v1');
+            const savedDate = localStorage.getItem('scrap_dashboard_date_str_linea_v1');
+            const savedDateFull = localStorage.getItem('scrap_dashboard_date_full_linea_v1');
 
             if (savedData) {
                 try { rawData = JSON.parse(savedData); } catch (e) { rawData = [...defaultRawData]; }
@@ -497,16 +461,16 @@
         }
 
         function saveToLocalStorage() {
-            localStorage.setItem('scrap_dashboard_data_v3', JSON.stringify(rawData));
-            localStorage.setItem('scrap_dashboard_prod_v3', baseProduction);
-            localStorage.setItem('scrap_dashboard_date_str_v3', dashboardDate);
-            localStorage.setItem('scrap_dashboard_date_full_v3', dashboardDateTextFull);
+            localStorage.setItem('scrap_dashboard_data_linea_v1', JSON.stringify(rawData));
+            localStorage.setItem('scrap_dashboard_prod_linea_v1', baseProduction);
+            localStorage.setItem('scrap_dashboard_date_str_linea_v1', dashboardDate);
+            localStorage.setItem('scrap_dashboard_date_full_linea_v1', dashboardDateTextFull);
         }
 
         function updateDateUI() {
             document.getElementById('topDateBadge').innerHTML = `<i class="fa-solid fa-calendar-day text-blue-600"></i> ประจำวันที่ ${dashboardDate}`;
             document.getElementById('sidebarDateText').innerText = dashboardDateTextFull;
-            document.getElementById('bannerTitle').innerText = `รายงานสรุปของเสียประจำวันที่ ${dashboardDateTextFull}`;
+            document.getElementById('bannerTitle').innerText = `รายงานสรุปของเสีย Line A ประจำวันที่ ${dashboardDateTextFull}`;
         }
 
         let paretoChartInstance = null;
@@ -541,7 +505,7 @@
         function handleFormSubmit(event) {
             event.preventDefault();
             let shift = document.getElementById('inputShift').value;
-            let dept = document.getElementById('inputDept').value;
+            let dept = "Line A";
             let problem = document.getElementById('inputProblem').value;
             let qty = parseInt(document.getElementById('inputQty').value);
             let owner = document.getElementById('inputOwner').value;
@@ -553,7 +517,7 @@
             closeModal();
             updateDashboard();
             document.getElementById('scrapForm').reset();
-            alert("บันทึกข้อมูลเรียบร้อยแล้ว!");
+            alert("บันทึกข้อมูล Line A เรียบร้อยแล้ว!");
         }
 
         function handleExcelFile(event) {
@@ -576,7 +540,7 @@
 
                         jsonSheet.forEach(row => {
                             let problem = row.problem || row['Problem'] || row['รายการปัญหา'] || row['DEFECT'];
-                            let shift = row.shift || row['Shift'] || row['กะ'] || row['กะเช้า Day'] || 'D';
+                            let shift = row.shift || row['Shift'] || row['กะ'] || 'D';
                             let qty = parseInt(row.qty || row['จำนวน Scrap'] || row['จำนวน'] || row['Qty'] || 1);
                             let deptInput = row.line || row['Line'] || row['Location'] || row['หน่วยงาน'] || 'Line A';
                             let owner = row.owner || row['ชื่อผู้รับผิดชอบ'] || 'ไม่ระบุ';
@@ -584,14 +548,14 @@
                             let prodVal = row.target || row['Target by daily'] || row['ยอดผลิต'];
                             let dateVal = row.date || row['Date'] || row['วันที่'];
 
-                            if (prodVal && !isNaN(parseInt(prodVal))) foundProduction = parseInt(prodVal) * 2;
-                            if (dateVal) foundDate = String(dateVal).trim();
-
-                            let deptFormatted = 'Line A';
+                            // กรองเอาเฉพาะข้อมูลที่เป็นของ Line A เท่านั้น
                             let dStr = String(deptInput).trim().toLowerCase();
                             if (dStr.includes('door') || dStr.includes('rac5')) {
-                                deptFormatted = 'Door';
+                                return; // ข้ามข้อมูล Door หากหลุดเข้ามาในไฟล์
                             }
+
+                            if (prodVal && !isNaN(parseInt(prodVal))) foundProduction = parseInt(prodVal);
+                            if (dateVal) foundDate = String(dateVal).trim();
 
                             let shiftFormatted = 'D';
                             let sStr = String(shift).trim().toUpperCase();
@@ -604,7 +568,7 @@
                                     problem: String(problem).trim(), 
                                     shift: shiftFormatted, 
                                     qty: qty, 
-                                    dept: deptFormatted,
+                                    dept: 'Line A',
                                     owner: String(owner).trim(),
                                     deptName: String(deptName).trim()
                                 });
@@ -620,15 +584,15 @@
                             }
 
                             saveToLocalStorage();
-                            localStorage.setItem('scrap_dashboard_filename_v3', file.name);
+                            localStorage.setItem('scrap_dashboard_filename_linea_v1', file.name);
                             document.getElementById('sidebarFileName').innerText = file.name;
-                            document.getElementById('bannerFileLabel').innerText = `ข้อมูลจากไฟล์: ${file.name} | ยอดผลิตรวม ${baseProduction.toLocaleString()} ชิ้น`;
+                            document.getElementById('bannerFileLabel').innerText = `ข้อมูลจากไฟล์: ${file.name} | ยอดผลิตรวม Line A ${baseProduction.toLocaleString()} ชิ้น`;
 
                             updateDateUI();
                             updateDashboard();
-                            alert(`อัปโหลดและประมวลผลไฟล์ "${file.name}" สำเร็จเรียบร้อยแล้ว!`);
+                            alert(`อัปโหลดและกรองข้อมูลเฉพาะ Line A จากไฟล์ "${file.name}" สำเร็จเรียบร้อยแล้ว!`);
                         } else {
-                            alert("ไม่พบข้อมูลรายการปัญหาในไฟล์ Excel ที่อัปโหลด");
+                            alert("ไม่พบข้อมูล Line A ในไฟล์ Excel หรือข้อมูลทั้งหมดเป็น Door");
                         }
                     }
                 } catch (err) {
@@ -683,11 +647,10 @@
             document.getElementById('shiftN-scrap').innerText = scrapN + ' ชิ้น';
             document.getElementById('shiftN-rate').innerText = rateN + '%';
 
-            // เรนเดอร์ตารางแยกตามหน่วยงาน (ตู้ Line A และ Door) พร้อมฟิลเตอร์กะเฉพาะตาราง
-            renderDepartmentTable('Line A', 'tableLineABody', document.getElementById('shiftFilterLineA').value);
-            renderDepartmentTable('Door', 'tableDoorBody', document.getElementById('shiftFilterDoor').value);
+            // เรนเดอร์ตาราง Line A ตามฟิลเตอร์กะ
+            renderDepartmentTable('tableLineABody', document.getElementById('shiftFilterLineA').value);
 
-            // Pareto ภาพรวม
+            // Pareto ภาพรวม Line A
             let filtered = rawData.filter(item => shiftFilter === 'ALL' || item.shift === shiftFilter);
             let aggregated = {};
             filtered.forEach(item => {
@@ -720,15 +683,15 @@
             renderShiftChart();
             renderAreaLineChart(paretoLabels, paretoCounts);
             renderPieChart(paretoLabels, paretoCounts);
-            renderDeptChart();
+            renderDeptChart(prodD, prodN, scrapD, scrapN);
             renderRadarChart();
         }
 
-        function renderDepartmentTable(deptName, elementId, shiftSelection) {
+        function renderDepartmentTable(elementId, shiftSelection) {
             const tbody = document.getElementById(elementId);
             tbody.innerHTML = '';
 
-            let filtered = rawData.filter(item => item.dept === deptName && (shiftSelection === 'ALL' || item.shift === shiftSelection));
+            let filtered = rawData.filter(item => shiftSelection === 'ALL' || item.shift === shiftSelection);
             let map = {};
             filtered.forEach(item => {
                 if (!map[item.problem]) map[item.problem] = { D: 0, N: 0, total: 0 };
@@ -895,28 +858,17 @@
             });
         }
 
-        function renderDeptChart() {
+        function renderDeptChart(prodD, prodN, scrapD, scrapN) {
             const ctx = document.getElementById('deptChart').getContext('2d');
             if (deptChartInstance) deptChartInstance.destroy();
-
-            let deptMap = {};
-            rawData.forEach(i => { 
-                let d = i.dept || 'Line A';
-                deptMap[d] = (deptMap[d] || 0) + i.qty; 
-            });
-
-            let deptLabels = Object.keys(deptMap);
-            let deptValues = Object.values(deptMap);
 
             deptChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: deptLabels,
-                    datasets: [{
-                        data: deptValues,
-                        backgroundColor: ['#3B82F6', '#6366F1', '#10B981', '#F59E0B'],
-                        borderRadius: 6
-                    }]
+                    labels: ['กะเช้า (D)', 'กะดึก (N)'],
+                    datasets: [
+                        { label: 'ของเสีย (ชิ้น)', data: [scrapD, scrapN], backgroundColor: '#EF4444', borderRadius: 6 }
+                    ]
                 },
                 options: {
                     responsive: true,
