@@ -160,10 +160,10 @@
                 <div class="bg-[#111827] p-5 rounded-3xl border border-slate-800/80 shadow-lg flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <span class="text-xs font-semibold text-slate-400">Day Shift Scrap</span>
-                        <div class="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-xs border border-sky-500/20"><i class="fa-solid fa-sun"></i></div>
+                        <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xs border border-amber-500/20"><i class="fa-solid fa-sun"></i></div>
                     </div>
                     <div class="mt-4">
-                        <span class="text-2xl font-bold text-sky-400" id="kpiDayScrap">10</span>
+                        <span class="text-2xl font-bold text-amber-400" id="kpiDayScrap">10</span>
                         <span class="text-xs text-slate-400 ml-1">ตู้ (50%)</span>
                     </div>
                 </div>
@@ -220,10 +220,10 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Day Shift Card -->
-                    <div class="bg-[#0b1120] p-6 rounded-2xl border border-sky-500/20 space-y-4">
+                    <div class="bg-[#0b1120] p-6 rounded-2xl border border-amber-500/20 space-y-4">
                         <div class="flex justify-between items-center">
-                            <h4 class="font-bold text-sky-400 text-base flex items-center gap-2"><i class="fa-solid fa-sun"></i> กะเช้า (Day Shift)</h4>
-                            <span class="bg-sky-500/10 text-sky-400 text-xs font-bold px-3 py-1 rounded-full border border-sky-500/20">10 ตู้ Scrap</span>
+                            <h4 class="font-bold text-amber-400 text-base flex items-center gap-2"><i class="fa-solid fa-sun text-amber-400"></i> กะเช้า (Day Shift)</h4>
+                            <span class="bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/20">10 ตู้ Scrap</span>
                         </div>
                         <div class="space-y-2 text-xs text-slate-300">
                             <div class="flex justify-between py-1.5 border-b border-slate-800/80"><span>ยอดผลิตต่อกะ:</span> <strong class="text-slate-100">1,806 ตู้</strong></div>
@@ -235,7 +235,7 @@
                     <!-- Night Shift Card -->
                     <div class="bg-[#0b1120] p-6 rounded-2xl border border-indigo-500/20 space-y-4">
                         <div class="flex justify-between items-center">
-                            <h4 class="font-bold text-indigo-400 text-base flex items-center gap-2"><i class="fa-solid fa-moon"></i> กะดึก (Night Shift)</h4>
+                            <h4 class="font-bold text-indigo-400 text-base flex items-center gap-2"><i class="fa-solid fa-moon text-indigo-400"></i> กะดึก (Night Shift)</h4>
                             <span class="bg-indigo-500/10 text-indigo-400 text-xs font-bold px-3 py-1 rounded-full border border-indigo-500/20">10 ตู้ Scrap</span>
                         </div>
                         <div class="space-y-2 text-xs text-slate-300">
@@ -429,8 +429,8 @@
             tbody.innerHTML = '';
             filtered.forEach(item => {
                 let shiftBadge = item.Shift.toLowerCase().includes('day') 
-                    ? `<span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2.5 py-1 rounded-full text-[11px] font-semibold">Day shift</span>`
-                    : `<span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2.5 py-1 rounded-full text-[11px] font-semibold">Night shift</span>`;
+                    ? `<span class="inline-flex items-center gap-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full text-[11px] font-semibold">Day shift <i class="fa-solid fa-sun text-amber-400 text-[10px]"></i></span>`
+                    : `<span class="inline-flex items-center gap-1.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2.5 py-1 rounded-full text-[11px] font-semibold">Night shift <i class="fa-solid fa-moon text-indigo-400 text-[10px]"></i></span>`;
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-[#111827]/50 transition">
@@ -463,7 +463,7 @@
                     datasets: [{
                         label: 'จำนวน Scrap (ตู้)',
                         data: [dayScrap, nightScrap],
-                        backgroundColor: ['#38bdf8', '#818cf8'],
+                        backgroundColor: ['#fbbf24', '#818cf8'],
                         borderRadius: 8,
                         barThickness: 50
                     }]
