@@ -11,12 +11,13 @@
     <!-- SheetJS (XLSX Reader / Writer) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Sarabun', 'Inter', sans-serif; font-size: 16px; line-height: 1.55; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+            #filterShift, #filterDept { min-width: 0; width: 100%; text-overflow: clip; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased">
@@ -30,22 +31,22 @@
                 <div>
                     <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
                         Production & Scrap Analytics System
-                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"><span class="rngTxt">01/10/2026 - 12/10/2026</span></span>
+                        <span class="text-sm font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"><span class="rngTxt">01/10/2026 - 12/10/2026</span></span>
                     </h1>
-                    <p class="text-xs text-slate-400">ระบบวิเคราะห์ข้อมูลการผลิต, ปัญหา Scrap และ Pareto 80/20 แยกตามกะและหน่วยงาน</p>
+                    <p class="text-sm text-slate-300">ระบบวิเคราะห์ข้อมูลการผลิต, ปัญหา Scrap และ Pareto 80/20 แยกตามกะและหน่วยงาน</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-2 flex-wrap justify-end">
-                <label for="excelFileInput" class="cursor-pointer bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition shadow-md shadow-indigo-600/30 flex items-center gap-1.5">
+                <label for="excelFileInput" class="cursor-pointer bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-sm font-semibold transition shadow-md shadow-indigo-600/30 flex items-center gap-1.5">
                     📂 แนบไฟล์ Excel (.xlsx)
                 </label>
                 <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelImport(event)">
                 
-                <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+                <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-sm font-semibold transition flex items-center gap-1.5 shadow-sm">
                     📥 ส่งออก Excel
                 </button>
-                <button onclick="resetDataset()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-medium transition">
+                <button onclick="resetDataset()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-xl text-sm font-medium transition">
                     🔄 โหลดข้อมูลหลัก (ต.ค. 1–12)
                 </button>
             </div>
@@ -53,38 +54,37 @@
     </header>
 
     <section class="bg-slate-900 border-b border-slate-800 py-3 px-4">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-center">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.6fr_2.2fr_0.9fr] gap-3 items-center">
             <div>
-                <label class="block text-xs font-medium text-slate-400 mb-1">🔍 ค้นหาละเอียด</label>
-                <input type="text" id="searchInput" placeholder="Model / สาเหตุ / ผู้รับผิดชอบ..." oninput="filterData()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                <label class="block text-sm font-medium text-slate-300 mb-1">🔍 ค้นหาละเอียด</label>
+                <input type="text" id="searchInput" placeholder="Model / สาเหตุ / ผู้รับผิดชอบ..." oninput="filterData()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
             </div>
             <div>
-                <label class="block text-xs font-medium text-slate-400 mb-1">📅 ตั้งแต่วันที่</label>
-                <input type="date" id="filterStartDate" onchange="filterData()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                <label class="block text-sm font-medium text-slate-300 mb-1">📅 ตั้งแต่วันที่</label>
+                <input type="date" id="filterStartDate" onchange="filterData()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
             </div>
             <div>
-                <label class="block text-xs font-medium text-slate-400 mb-1">📅 ถึงวันที่</label>
-                <input type="date" id="filterEndDate" onchange="filterData()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                <label class="block text-sm font-medium text-slate-300 mb-1">📅 ถึงวันที่</label>
+                <input type="date" id="filterEndDate" onchange="filterData()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
             </div>
             <div>
-                <label class="block text-xs font-medium text-slate-400 mb-1">🏭 หน่วยงาน (Dept)</label>
-                <select id="filterDept" onchange="filterData()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                <label class="block text-sm font-medium text-slate-300 mb-1">🏭 หน่วยงาน (Dept)</label>
+                <select id="filterDept" onchange="filterData()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                     <option value="ALL">ทุกหน่วยงาน (ทั้งหมด)</option>
                     <option value="ตู้ A Line">ตู้ A Line</option>
                     <option value="Door">Door</option>
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-medium text-slate-400 mb-1">🌙 กะการทำงาน (Shift)</label>
-                <select id="filterShift" onchange="filterData()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                <label class="block text-sm font-medium text-slate-300 mb-1">🌙 กะการทำงาน (Shift)</label>
+                <select id="filterShift" onchange="filterData()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                     <option value="ALL">ทุกกะ (Day Shift + Night Shift)</option>
                     <option value="Day">Day Shift</option>
                     <option value="Night">Night Shift</option>
-                    <option value="ไม่ระบุ">ไม่ระบุกะ</option>
                 </select>
             </div>
             <div class="flex items-end h-full pt-1">
-                <button onclick="resetFilters()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-3 py-1.5 rounded-lg text-xs transition border border-slate-700">
+                <button onclick="resetFilters()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-3 py-1.5 rounded-lg text-sm transition border border-slate-700">
                     ⚙️ รีเซ็ตตัวกรอง
                 </button>
             </div>
@@ -93,11 +93,11 @@
 
     <section id="dayBar" class="bg-slate-900/70 border-b border-slate-800 px-4 py-2">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-2">
-            <span class="text-xs font-medium text-slate-400">🏭 หน่วยงาน:</span>
+            <span class="text-sm font-medium text-slate-300">🏭 หน่วยงาน:</span>
             <div id="deptChips" class="flex gap-1.5 mr-3"></div>
-            <span class="text-xs font-medium text-slate-400">📆 ดูรายวัน:</span>
-            <button id="dayPrev" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-slate-700">◀ ก่อนหน้า</button>
-            <button id="dayNext" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-slate-700">ถัดไป ▶</button>
+            <span class="text-sm font-medium text-slate-300">📆 ดูรายวัน:</span>
+            <button id="dayPrev" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm border border-slate-700">◀ ก่อนหน้า</button>
+            <button id="dayNext" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm border border-slate-700">ถัดไป ▶</button>
             <div id="dayChips" class="flex flex-wrap gap-1.5"></div>
         </div>
     </section>
@@ -107,75 +107,81 @@
         <!-- Key Performance Indicators -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
-                <span class="text-xs font-medium text-slate-400">ยอดผลิตรวม (Total Output)</span>
-                <span id="kpiOutputSplit" class="text-[11px] text-slate-400 mt-1"></span>
+                <span class="text-sm font-medium text-slate-300">ยอดผลิตรวม (Total Output)</span>
+                <span id="kpiOutputSplit" class="text-xs text-slate-300 mt-1"></span>
                 <div class="flex items-baseline justify-between mt-2">
                     <h3 id="kpiOutput" class="text-2xl font-bold text-slate-100">0</h3>
-                    <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">ชิ้น</span>
+                    <span class="text-sm text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">ชิ้น</span>
                 </div>
             </div>
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
-                <span class="text-xs font-medium text-slate-400">ยอด Scrap รวม (Defect Qty)</span>
+                <span class="text-sm font-medium text-slate-300">ยอด Scrap รวม (Defect Qty)</span>
                 <div class="flex items-baseline justify-between mt-2">
                     <h3 id="kpiScrap" class="text-2xl font-bold text-rose-500">0</h3>
-                    <span class="text-xs text-rose-400 font-semibold bg-rose-500/10 px-2 py-0.5 rounded-full">ชิ้น</span>
+                    <span class="text-sm text-rose-400 font-semibold bg-rose-500/10 px-2 py-0.5 rounded-full">ชิ้น</span>
                 </div>
             </div>
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
-                <span class="text-xs font-medium text-slate-400">% Scrap อัตราของเสีย</span>
+                <span class="text-sm font-medium text-slate-300">% Scrap อัตราของเสีย</span>
                 <div class="flex items-baseline justify-between mt-2">
                     <h3 id="kpiScrapRate" class="text-2xl font-bold text-amber-400">0.00%</h3>
-                    <span class="text-xs text-amber-400 font-semibold bg-amber-500/10 px-2 py-0.5 rounded-full">เป้าหมาย &lt; 2.5%</span>
+                    <span class="text-sm text-amber-400 font-semibold bg-amber-500/10 px-2 py-0.5 rounded-full">เป้าหมาย &lt; 2.5%</span>
                 </div>
             </div>
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
-                <span class="text-xs font-medium text-slate-400">หน่วยงาน Scrap สูงสุด</span>
+                <span class="text-sm font-medium text-slate-300">หน่วยงาน Scrap สูงสุด</span>
                 <div class="flex items-baseline justify-between mt-2">
                     <h3 id="kpiMaxDept" class="text-base font-bold text-indigo-400 truncate">-</h3>
-                    <span class="text-[10px] text-slate-400">สูงสุด</span>
+                    <span class="text-xs text-slate-300">สูงสุด</span>
                 </div>
             </div>
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
-                <span class="text-xs font-medium text-slate-400">จำนวนบันทึกข้อมูลดิบ</span>
+                <span class="text-sm font-medium text-slate-300">จำนวนบันทึกข้อมูลดิบ</span>
                 <div class="flex items-baseline justify-between mt-2">
                     <h3 id="kpiRecords" class="text-2xl font-bold text-sky-400">0</h3>
-                    <span class="text-xs text-sky-400 font-semibold bg-sky-500/10 px-2 py-0.5 rounded-full">รายการ</span>
+                    <span class="text-sm text-sky-400 font-semibold bg-sky-500/10 px-2 py-0.5 rounded-full">รายการ</span>
                 </div>
             </div>
         </div>
 
+        <div id="pgTabs" class="flex flex-wrap gap-2">
+            <button data-t="1">📊 ผลิต & ของเสียรายวัน (<span class="rngTxt">01/10/2026 - 12/10/2026</span>)</button>
+            <button data-t="2">📉 Pareto TOP 10 + ปัญหาอื่นๆ</button>
+            <button data-t="3">🏭 สัดส่วน Scrap แยกตามหน่วยงาน / สรุปตามผู้รับผิดชอบ-แผนก</button>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Daily Production & Scrap Bar Chart -->
-            <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col">
+            <div data-pg="1" class="lg:col-span-2 bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col">
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h3 class="font-bold text-slate-100 text-sm">📊 ผลิต & ของเสียรายวัน (<span class="rngTxt">01/10/2026 - 12/10/2026</span>)</h3>
-                        <p class="text-xs text-slate-400">จำแนกตามวันที่, กะ และหน่วยงาน</p>
+                        <h3 class="font-bold text-slate-100 text-base">📊 ผลิต & ของเสียรายวัน (<span class="rngTxt">01/10/2026 - 12/10/2026</span>)</h3>
+                        <p class="text-sm text-slate-300">จำแนกตามวันที่, กะ และหน่วยงาน</p>
                     </div>
                 </div>
-                <div class="relative flex-1 min-h-[320px]">
+                <div class="relative flex-1 min-h-[480px]">
                     <canvas id="dailyChart"></canvas>
                 </div>
             </div>
 
             <!-- Pareto Chart (80/20 Rule) -->
-            <div class="lg:col-span-2 bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col">
+            <div data-pg="2" class="hidden lg:col-span-2 bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col">
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h3 class="font-bold text-slate-100 text-sm">📉 Pareto TOP 10 + ปัญหาอื่นๆ</h3>
-                        <p class="text-xs text-slate-400">วิเคราะห์สาเหตุปัญหา Scrap หลักเรียงจากมากไปน้อย</p>
+                        <h3 class="font-bold text-slate-100 text-base">📉 Pareto TOP 10 + ปัญหาอื่นๆ</h3>
+                        <p class="text-sm text-slate-300">วิเคราะห์สาเหตุปัญหา Scrap หลักเรียงจากมากไปน้อย</p>
                     </div>
-                    <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-lg font-medium">Top Defect Zone</span>
+                    <span class="text-sm bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-lg font-medium">Top Defect Zone</span>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-10 gap-4"><div class="relative lg:col-span-7 min-h-[340px]"><canvas id="paretoChart"></canvas></div><div id="paretoTable" class="lg:col-span-3 max-h-[340px] overflow-auto custom-scrollbar"></div></div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div data-pg="3" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Breakdown by Dept Donut -->
             <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col">
-                <h3 class="font-bold text-slate-100 text-sm mb-1">🏭 สัดส่วน Scrap แยกตามหน่วยงาน</h3>
-                <p class="text-xs text-slate-400 mb-3">ตู้ A Line vs Door</p>
+                <h3 class="font-bold text-slate-100 text-base mb-1">🏭 สัดส่วน Scrap แยกตามหน่วยงาน</h3>
+                <p class="text-sm text-slate-300 mb-3">ตู้ A Line vs Door</p>
                 <div class="relative flex-1 min-h-[220px]">
                     <canvas id="deptChart"></canvas>
                 </div>
@@ -183,8 +189,8 @@
 
             <!-- Breakdown by Responsible Party -->
             <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col lg:col-span-2">
-                <h3 class="font-bold text-slate-100 text-sm mb-1">👤 สรุป Scrap แยกตามผู้รับผิดชอบ / แผนก</h3>
-                <p class="text-xs text-slate-400 mb-3">จำแนกผู้รับผิดชอบหลักที่เกี่ยวข้อง</p>
+                <h3 class="font-bold text-slate-100 text-base mb-1">👤 สรุป Scrap แยกตามผู้รับผิดชอบ / แผนก</h3>
+                <p class="text-sm text-slate-300 mb-3">จำแนกผู้รับผิดชอบหลักที่เกี่ยวข้อง</p>
                 <div class="relative flex-1 min-h-[220px]">
                     <canvas id="respChart"></canvas>
                 </div>
@@ -195,10 +201,10 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
                     <h3 class="font-bold text-slate-100 text-base">📝 ข้อมูลดิบอย่างละเอียด (Detailed Raw Records)</h3>
-                    <p class="text-xs text-slate-400">รวมข้อมูลทั้งหมด <span class="rngTxt">01/10/2026 - 12/10/2026</span> พร้อมฟิลด์ครบถ้วน</p>
+                    <p class="text-sm text-slate-300">รวมข้อมูลทั้งหมด <span class="rngTxt">01/10/2026 - 12/10/2026</span> พร้อมฟิลด์ครบถ้วน</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="addNewRecordModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+                    <button onclick="addNewRecordModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition">
                         + เพิ่มข้อมูลใหม่
                     </button>
                 </div>
@@ -206,8 +212,8 @@
 
             <!-- Table Container -->
             <div class="overflow-x-auto rounded-xl border border-slate-800 custom-scrollbar max-h-[420px]">
-                <table class="w-full text-left text-xs text-slate-300">
-                    <thead class="bg-slate-950 text-slate-400 border-b border-slate-800 sticky top-0 z-10 font-semibold">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-950 text-slate-300 border-b border-slate-800 sticky top-0 z-10 font-semibold">
                         <tr>
                             <th class="p-3 cursor-pointer hover:text-white" onclick="sortTable('date')">วันที่ ⇳</th>
                             <th class="p-3 cursor-pointer hover:text-white" onclick="sortTable('shift')">กะ ⇳</th>
@@ -228,7 +234,7 @@
             </div>
 
             <!-- Pagination Bar -->
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2 text-xs text-slate-400">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2 text-sm text-slate-300">
                 <div id="pageInfo">แสดงรายการที่ 0 ถึง 0 จากทั้งหมด 0 รายการ</div>
                 <div class="flex items-center space-x-2">
                     <button id="prevBtn" onclick="changePage(-1)" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-300 disabled:opacity-50">ก่อนหน้า</button>
@@ -245,56 +251,56 @@
             <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">
                 ➕ เพิ่มบันทึกข้อมูลการผลิต / Scrap
             </h3>
-            <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">วันที่ (Date)</label>
+                    <label class="block font-medium text-slate-300 mb-1">วันที่ (Date)</label>
                     <input type="date" id="mDate" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">กะ (Shift)</label>
+                    <label class="block font-medium text-slate-300 mb-1">กะ (Shift)</label>
                     <select id="mShift" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
                         <option value="Day">Day Shift</option>
-                        <option value="Night">Night Shift</option><option value="ไม่ระบุ">ไม่ระบุกะ</option>
+                        <option value="Night">Night Shift</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">หน่วยงาน (Dept)</label>
+                    <label class="block font-medium text-slate-300 mb-1">หน่วยงาน (Dept)</label>
                     <select id="mDept" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
                         <option value="ตู้ A Line">ตู้ A Line</option>
                         <option value="Door">Door</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">Model / รุ่น</label>
+                    <label class="block font-medium text-slate-300 mb-1">Model / รุ่น</label>
                     <input type="text" id="mModel" placeholder="เช่น MD-5001" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">ลักษณะปัญหา (Defect)</label>
+                    <label class="block font-medium text-slate-300 mb-1">ลักษณะปัญหา (Defect)</label>
                     <input type="text" id="mDefect" placeholder="เช่น รอยขีดข่วน" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">สาเหตุ (Cause)</label>
+                    <label class="block font-medium text-slate-300 mb-1">สาเหตุ (Cause)</label>
                     <input type="text" id="mCause" placeholder="เช่น แม่พิมพ์สึกหรอ" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">Location / จุดที่พบ</label>
+                    <label class="block font-medium text-slate-300 mb-1">Location / จุดที่พบ</label>
                     <input type="text" id="mLocation" placeholder="เช่น ตำแหน่งขอบซ้าย" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">ผู้รับผิดชอบ / แผนก</label>
+                    <label class="block font-medium text-slate-300 mb-1">ผู้รับผิดชอบ / แผนก</label>
                     <input type="text" id="mResp" placeholder="เช่น ช่างเทคนิค Line A" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">ยอดผลิต (Output Qty)</label>
+                    <label class="block font-medium text-slate-300 mb-1">ยอดผลิต (Output Qty)</label>
                     <input type="number" id="mOutput" value="0" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">จำนวน Scrap Qty</label>
+                    <label class="block font-medium text-slate-300 mb-1">จำนวน Scrap Qty</label>
                     <input type="number" id="mScrap" value="10" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
                 </div>
             </div>
 
-            <div class="flex justify-end gap-2 pt-3 border-t border-slate-800 text-xs">
+            <div class="flex justify-end gap-2 pt-3 border-t border-slate-800 text-sm">
                 <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">ยกเลิก</button>
                 <button onclick="saveRecord()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg">บันทึกข้อมูล</button>
             </div>
@@ -309,11 +315,13 @@
             return REAL.map((r, i) => ({ id: i + 1, date: r[0], shift: r[9], dept: r[1], model: r[2], defect: normDefect(r[3]), cause: r[4], location: r[5], resp: r[6], pic: r[8], output: 0, scrap: r[7] }));
         }
 
-        Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.font='bold 10px Inter,sans-serif';
+        Chart.defaults.font.family = "Sarabun, Inter, sans-serif"; Chart.defaults.font.size = 13; Chart.defaults.color = '#e2e8f0';
+Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.font='bold 13px Sarabun,Inter,sans-serif';
  c.data.datasets.forEach((ds,i)=>{if(!ds.lbl&&!ds.pie)return;c.getDatasetMeta(i).data.forEach((e,j)=>{const v=ds.data[j];if(!v)return;
   if(ds.pie){const p=e.getCenterPoint();x.fillStyle='#0f172a';x.textAlign='center';x.fillText(v,p.x,p.y+4);return}
   const h=c.options.indexAxis==='y';x.fillStyle=ds.pct?'#38bdf8':'#e2e8f0';x.textAlign=h?'left':'center';
-  x.fillText(ds.pct?v+'%':v,h?e.x+4:e.x,h?e.y+3:e.y-6)})});x.restore()}});
+  if(ds.pct){const s=v+'%',w=x.measureText(s).width+10,col=ds.borderColor||'#f59e0b';x.fillStyle='#0f172a';x.strokeStyle=col;x.lineWidth=1;x.beginPath();x.rect(e.x-w/2,e.y-25,w,17);x.fill();x.stroke();x.fillStyle=col;x.textAlign='center';x.fillText(s,e.x,e.y-12);return}
+  x.fillText(v,h?e.x+4:e.x,h?e.y+3:e.y-6)})});x.restore()}});
         let masterData = generateInitialDataset();
         let prodData = PROD.map(r => ({ date: r[0], dept: r[1], shift: r[2], plan: r[3] }));
         let filteredData = [...masterData];
@@ -328,6 +336,7 @@
         let respChartInstance = null;
 
         window.onload = function() {
+            showPage(1);
             // Default Start & End Dates
             document.getElementById('filterStartDate').value = "2026-10-01";
             document.getElementById('filterEndDate').value = "2026-10-12";
@@ -384,7 +393,7 @@
         }
         function renderDeptChips() {
             const cur = document.getElementById('filterDept').value;
-            const cls = on => 'px-3 py-1 rounded-lg text-xs border transition ' + (on ? 'bg-emerald-600 border-emerald-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700');
+            const cls = on => 'px-3 py-1 rounded-lg text-sm border transition ' + (on ? 'bg-emerald-600 border-emerald-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700');
             document.getElementById('deptChips').innerHTML = [['ALL', 'ทุกหน่วยงาน'], ['ตู้ A Line', 'ตู้ A Line'], ['Door', 'Door']].map(d => `<button data-dept="${d[0]}" class="${cls(cur === d[0])}">${d[1]}</button>`).join('');
         }
         document.getElementById('deptChips').addEventListener('click', ev => {
@@ -396,7 +405,7 @@
             const ds = dayList(), cnt = {};
             masterData.forEach(x => { cnt[x.date] = (cnt[x.date] || 0) + Number(x.scrap); });
             const s = document.getElementById('filterStartDate').value, e = document.getElementById('filterEndDate').value;
-            const cls = on => 'px-2.5 py-1 rounded-lg text-xs border transition ' + (on ? 'bg-indigo-600 border-indigo-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700');
+            const cls = on => 'px-2.5 py-1 rounded-lg text-sm border transition ' + (on ? 'bg-indigo-600 border-indigo-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700');
             const all = ds.length && s === ds[0] && e === ds[ds.length - 1];
             document.getElementById('dayChips').innerHTML = `<button data-all="1" class="${cls(all)}">ทั้งหมด</button>` +
                 ds.map(d => { const [y, m, dd] = d.split('-'); return `<button data-d="${d}" class="${cls(s === d && e === d)}">${+dd} ${THM[+m - 1]} <span class="opacity-60">(${cnt[d]})</span></button>`; }).join('');
@@ -414,6 +423,18 @@
         });
         document.getElementById('dayPrev').onclick = () => stepDay(-1);
         document.getElementById('dayNext').onclick = () => stepDay(1);
+
+        const tabCls = on => 'px-4 py-2 rounded-xl text-base font-semibold border transition ' + (on ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-600/20' : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800');
+        function showPage(n) {
+            document.querySelectorAll('[data-pg]').forEach(el => {
+                const on = el.dataset.pg == n;
+                el.classList.toggle('hidden', !on);
+                if (el.dataset.pg == '3') el.classList.toggle('grid', on);
+            });
+            document.querySelectorAll('#pgTabs button').forEach(b => { b.className = tabCls(b.dataset.t == n); });
+            setTimeout(() => [dailyChartInstance, paretoChartInstance, deptChartInstance, respChartInstance].forEach(c => c && c.resize()), 30);
+        }
+        document.getElementById('pgTabs').addEventListener('click', ev => { const b = ev.target.closest('button'); if (b) showPage(b.dataset.t); });
 
         function updateDashboard() {
             renderDayChips();
@@ -471,7 +492,7 @@
             const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
             if (pageData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-500">ไม่พบข้อมูลตามเงื่อนไขที่กรอง</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-400">ไม่พบข้อมูลตามเงื่อนไขที่กรอง</td></tr>`;
                 document.getElementById('pageInfo').innerText = `แสดงรายการที่ 0 ถึง 0 จากทั้งหมด 0 รายการ`;
                 return;
             }
@@ -482,19 +503,19 @@
                     <tr class="hover:bg-slate-800/50 transition">
                         <td class="p-3 font-medium text-slate-200">${item.date}</td>
                         <td class="p-3">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${item.shift === 'Day' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : item.shift === 'ไม่ระบุ' ? 'bg-slate-500/10 text-slate-400 border border-slate-500/20' : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'}">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold ${item.shift === 'Day' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : item.shift === 'ไม่ระบุ' ? 'bg-slate-500/10 text-slate-300 border border-slate-500/20' : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'}">
                                 ${item.shift}
                             </span>
                         </td>
                         <td class="p-3 text-slate-300">${item.dept}</td>
-                        <td class="p-3 font-mono text-xs text-indigo-300">${item.model}</td>
+                        <td class="p-3 font-mono text-sm text-indigo-300">${item.model}</td>
                         <td class="p-3 text-slate-200">${item.defect}</td>
-                        <td class="p-3 text-slate-400">${item.cause}</td>
-                        <td class="p-3 text-slate-400">${item.location}</td>
+                        <td class="p-3 text-slate-300">${item.cause}</td>
+                        <td class="p-3 text-slate-300">${item.location}</td>
                         <td class="p-3 text-slate-300">${item.resp}${item.pic ? ' · ' + item.pic : ''}</td>
                         <td class="p-3 text-right font-bold text-rose-400">${item.scrap.toLocaleString()}</td>
                         <td class="p-3 text-center">
-                            <button onclick="deleteRecord(${item.id})" class="text-slate-500 hover:text-rose-400 p-1 transition">🗑️</button>
+                            <button onclick="deleteRecord(${item.id})" class="text-slate-400 hover:text-rose-400 p-1 transition">🗑️</button>
                         </td>
                     </tr>
                 `;
@@ -545,24 +566,30 @@
 
             if (dailyChartInstance) dailyChartInstance.destroy();
 
+            const maxBar = Math.max(1, ...labels.map(l => Math.max(dayShiftMap[l].dayScrap, dayShiftMap[l].nightScrap)));
+            const maxRate = Math.max(0.5, ...rateData.filter(v => v !== null));
+            const shortLbl = labels.map(l => l.slice(8) + '/' + l.slice(5, 7));
+            const axT = (txt, col) => ({ display: true, text: txt, color: col, font: { size: 12, weight: '600' } });
+            const BAR = { borderRadius: 2, maxBarThickness: 34, yAxisID: 'y', lbl: true };
             dailyChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: shortLbl,
                     datasets: [
-                        { label: 'Scrap (Day Shift)', data: dayData, backgroundColor: '#f59e0b', borderRadius: 4, lbl: true },
-                        { label: 'Scrap (Night Shift)', data: nightData, backgroundColor: '#6366f1', borderRadius: 4, lbl: true },
-                        { type: 'line', label: 'Scrap Rate %', data: rateData, yAxisID: 'y1', borderColor: '#38bdf8', backgroundColor: '#38bdf8', lbl: true, pct: true, spanGaps: true },
-                        { label: 'Scrap (ไม่ระบุกะ)', data: labels.map(l => dayShiftMap[l].unkScrap), backgroundColor: '#475569', borderRadius: 4, lbl: true }
+                        { ...BAR, label: 'Day Shift (ชิ้น)', data: dayData, backgroundColor: '#3b82f6' },
+                        { ...BAR, label: 'Night Shift (ชิ้น)', data: nightData, backgroundColor: '#14b8a6' },
+                        { type: 'line', label: 'Scrap Rate (%)', data: rateData, yAxisID: 'y1', order: 0, borderColor: '#f59e0b', backgroundColor: '#f59e0b', borderWidth: 2.5, pointRadius: 4, pointBorderColor: '#0f172a', pointBorderWidth: 1.5, tension: 0.25, lbl: true, pct: true, spanGaps: true }
                     ]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, layout: { padding: { top: 18, right: 24 } },
-                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
-                    scales: { y1: { position: 'right', beginAtZero: true, display: hasRate, grid: { drawOnChartArea: false }, ticks: { color: '#38bdf8', callback: v => v + '%' } },
-                        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
-                        y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } }
+                    maintainAspectRatio: false, layout: { padding: { top: 40, right: 8 } },
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { position: 'top', labels: { color: '#cbd5e1', font: { size: 12 }, usePointStyle: true, boxWidth: 10, padding: 18, filter: (it, d) => d.datasets[it.datasetIndex].data.some(v => v) } } },
+                    scales: {
+                        x: { title: axT('วันที่ (วัน/เดือน)', '#94a3b8'), ticks: { color: '#cbd5e1', font: { size: 12 } }, grid: { display: false } },
+                        y: { beginAtZero: true, max: Math.ceil(maxBar * 1.65), title: axT('จำนวน Scrap (ชิ้น)', '#94a3b8'), ticks: { color: '#cbd5e1', font: { size: 13 }, precision: 0 }, grid: { color: 'rgba(148,163,184,0.18)' } },
+                        y1: { position: 'right', min: -maxRate * 2.2, max: maxRate * 1.25, display: hasRate, title: axT('Scrap Rate (%)', '#f59e0b'), grid: { drawOnChartArea: false }, ticks: { color: '#fbbf24', font: { size: 13 }, callback: v => v < 0 ? '' : Number(v.toFixed(1)) + '%' } }
                     }
                 }
             });
@@ -594,8 +621,8 @@
             });
 
             const tot = totalScrap || 1;
-            document.getElementById('paretoTable').innerHTML = '<table class="w-full text-xs"><thead class="text-slate-400 sticky top-0 bg-slate-900"><tr><th class="text-left p-2">#</th><th class="text-left p-2">ปัญหา</th><th class="text-right p-2">จำนวน</th><th class="text-right p-2">%</th></tr></thead><tbody class="divide-y divide-slate-800">' +
-                labels.map((l, i) => `<tr class="${l === 'ปัญหาอื่นๆ' ? 'text-slate-500 italic' : 'text-slate-200'}"><td class="p-2">${l === 'ปัญหาอื่นๆ' ? '' : i + 1}</td><td class="p-2">${l}</td><td class="p-2 text-right font-semibold">${counts[i]}</td><td class="p-2 text-right">${(counts[i] / tot * 100).toFixed(1)}%</td></tr>`).join('') +
+            document.getElementById('paretoTable').innerHTML = '<table class="w-full text-sm"><thead class="text-slate-300 sticky top-0 bg-slate-900"><tr><th class="text-left p-2">#</th><th class="text-left p-2">ปัญหา</th><th class="text-right p-2">จำนวน</th><th class="text-right p-2">%</th></tr></thead><tbody class="divide-y divide-slate-800">' +
+                labels.map((l, i) => `<tr class="${l === 'ปัญหาอื่นๆ' ? 'text-slate-400 italic' : 'text-slate-200'}"><td class="p-2">${l === 'ปัญหาอื่นๆ' ? '' : i + 1}</td><td class="p-2">${l}</td><td class="p-2 text-right font-semibold">${counts[i]}</td><td class="p-2 text-right">${(counts[i] / tot * 100).toFixed(1)}%</td></tr>`).join('') +
                 `<tr class="font-bold text-white"><td></td><td class="p-2">รวม</td><td class="p-2 text-right">${totalScrap}</td><td class="p-2 text-right">100%</td></tr></tbody></table>`;
             if (paretoChartInstance) paretoChartInstance.destroy();
 
@@ -627,10 +654,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false, layout: { padding: { top: 18, right: 24 } },
-                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
+                    plugins: { legend: { labels: { color: '#e2e8f0', font: { size: 13 } } } },
                     scales: {
-                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { display: false } },
-                        y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } },
+                        x: { ticks: { color: '#cbd5e1', font: { size: 11 } }, grid: { display: false } },
+                        y: { ticks: { color: '#cbd5e1' }, grid: { color: 'rgba(148,163,184,0.18)' } },
                         y1: { min: 0, max: 100, position: 'right', ticks: { color: '#38bdf8' }, grid: { display: false } }
                     }
                 }
@@ -657,7 +684,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false, layout: { padding: { top: 18, right: 24 } },
-                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } } }
+                    plugins: { legend: { position: 'bottom', labels: { color: '#e2e8f0', font: { size: 13 } } } }
                 }
             });
         }
@@ -686,8 +713,8 @@
                     indexAxis: 'y',
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } },
-                        y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
+                        x: { ticks: { color: '#cbd5e1' }, grid: { color: 'rgba(148,163,184,0.18)' } },
+                        y: { ticks: { color: '#e2e8f0', font: { size: 12 } }, grid: { display: false } }
                     }
                 }
             });
