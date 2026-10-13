@@ -1,697 +1,562 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Executive Scrap Analytics Dashboard</title>
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- SheetJS for Excel Parsing -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- Google Fonts - Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#f0f6fe',
-              100: '#ddeafd',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-              900: '#1e3a8a',
-            },
-            dark: {
-              bg: '#0f172a',
-              card: '#1e293b',
-              border: '#334155',
-              hover: '#334155/60',
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #0f172a;
-      color: #f8fafc;
-    }
-    /* Custom scrollbars */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0f172a;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #475569;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production & Scrap Pareto Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- Top Navigation Header -->
-  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <!-- Brand Title -->
-        <div class="flex items-center space-x-3">
-          <div class="bg-gradient-to-tr from-blue-600 to-indigo-500 p-2.5 rounded-xl shadow-lg shadow-blue-500/20">
-            <i class="fa-solid me-0 fa-chart-pie text-white text-lg"></i>
-          </div>
-          <div>
-            <h1 class="text-lg font-bold text-white tracking-wide leading-none">SCRAP ANALYTICS</h1>
-            <p class="text-xs text-slate-400 mt-0.5">Executive Quality & Waste Intelligence</p>
-          </div>
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 p-2 rounded-xl text-white font-bold text-xl shadow-inner">
+                    📊
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">Production & Scrap Dashboard</h1>
+                    <p class="text-xs text-slate-400">Real-time Pareto 80/20 Analysis & Raw Data Management</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <label for="csvFileInput" class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2">
+                    📁 นำเข้าไฟล์ CSV
+                </label>
+                <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
+                <button onclick="loadSampleData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-xl text-sm font-medium transition">
+                    โหลดข้อมูลตัวอย่าง
+                </button>
+            </div>
         </div>
+    </header>
 
-        <!-- Action Controls -->
-        <div class="flex items-center space-x-3">
-          <button id="loadDemoBtn" onclick="loadSampleData()" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all flex items-center space-x-1.5">
-            <i class="fa-solid fa-flask text-amber-400"></i>
-            <span>Load Demo Data</span>
-          </button>
-          
-          <label class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-500 text-white cursor-pointer transition-all shadow-md shadow-blue-600/30 flex items-center space-x-1.5">
-            <i class="fa-solid fa-file-excel"></i>
-            <span>Upload Excel</span>
-            <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleFileUpload(event)" />
-          </label>
+    <section class="bg-white border-b border-slate-200 shadow-sm py-3 px-4">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-3 items-center">
+            <div>
+                <label class="block text-xs font-medium text-slate-500 mb-1">🔍 ค้นหา (ค้นหาชื่อ/สาเหตุ)</label>
+                <input type="text" id="searchInput" placeholder="พิมพ์เพื่อค้นหา..." oninput="filterData()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-500 mb-1">📅 เลือกวันที่</label>
+                <select id="filterDate" onchange="filterData()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="ALL">ทั้งหมดทุกวัน</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-500 mb-1">🌙 กะการทำงาน (Shift)</label>
+                <select id="filterShift" onchange="filterData()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="ALL">ทุกกะ (All Shifts)</option>
+                    <option value="Day">กะกลางวัน (Day)</option>
+                    <option value="Night">กะกลางคืน (Night)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-500 mb-1">🏭 หน่วยงาน (Department)</label>
+                <select id="filterDept" onchange="filterData()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="ALL">ทุกหน่วยงาน (All Depts)</option>
+                    <option value="ตู้ไลน์ A">ตู้ไลน์ A</option>
+                    <option value="Door">Door</option>
+                </select>
+            </div>
+            <div class="flex items-end h-full pt-5">
+                <button onclick="resetFilters()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium px-3 py-1.5 rounded-lg text-sm transition">
+                    🔄 รีเซ็ตตัวกรอง
+                </button>
+            </div>
         </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-    <!-- Upload Indicator / Status Bar -->
-    <div id="fileStatusBanner" class="hidden bg-slate-900/60 border border-slate-800 rounded-xl p-3 flex justify-between items-center text-xs text-slate-300">
-      <div class="flex items-center space-x-2">
-        <i class="fa-solid fa-file-circle-check text-emerald-400 text-sm"></i>
-        <span>Active File: <strong id="fileNameDisplay" class="text-white font-medium">--</strong></span>
-        <span class="text-slate-500">•</span>
-        <span>Total Records: <strong id="recordCountDisplay" class="text-white font-medium">0</strong></span>
-      </div>
-      <button onclick="resetData()" class="text-slate-400 hover:text-rose-400 transition">
-        <i class="fa-solid fa-xmark"></i> Clear Data
-      </button>
-    </div>
-
-    <!-- Navigation Tabs -->
-    <div class="flex border-b border-slate-800 space-x-2 sm:space-x-8 overflow-x-auto">
-      <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn px-4 py-3 text-sm font-semibold text-blue-500 border-b-2 border-blue-500 transition flex items-center space-x-2 whitespace-nowrap">
-        <i class="fa-solid fa-gauge-high"></i>
-        <span>Executive Overview</span>
-      </button>
-      <button onclick="switchTab('shift')" id="tab-shift" class="tab-btn px-4 py-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition flex items-center space-x-2 whitespace-nowrap">
-        <i class="fa-solid fa-clock-rotate-left"></i>
-        <span>Shift Analysis</span>
-      </button>
-      <button onclick="switchTab('pareto')" id="tab-pareto" class="tab-btn px-4 py-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition flex items-center space-x-2 whitespace-nowrap">
-        <i class="fa-solid fa-chart-line"></i>
-        <span>Pareto Analysis (80/20)</span>
-      </button>
-      <button onclick="switchTab('table')" id="tab-table" class="tab-btn px-4 py-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition flex items-center space-x-2 whitespace-nowrap">
-        <i class="fa-solid fa-table"></i>
-        <span>Raw Data Table</span>
-      </button>
-    </div>
-
-    <!-- Metric Cards -->
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <!-- Metric 1: Total Production -->
-      <div class="bg-slate-900 border border-slate-800/80 rounded-xl p-5 shadow-sm relative overflow-hidden">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Production</span>
-          <div class="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
-            <i class="fa-solid fa-boxes-stacked"></i>
-          </div>
-        </div>
-        <div class="mt-2 flex items-baseline">
-          <span id="metricProduction" class="text-2xl font-bold text-white">0</span>
-          <span class="ml-1 text-xs text-slate-400">units</span>
-        </div>
-        <div class="mt-2 text-xs text-slate-500 flex items-center space-x-1">
-          <span id="metricProdSub" class="text-emerald-400 font-medium"><i class="fa-solid fa-circle-check"></i> Target Met</span>
-        </div>
-      </div>
-
-      <!-- Metric 2: Total Scrap Quantity -->
-      <div class="bg-slate-900 border border-slate-800/80 rounded-xl p-5 shadow-sm relative overflow-hidden">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Scrap</span>
-          <div class="p-2 rounded-lg bg-rose-500/10 text-rose-400">
-            <i class="fa-solid fa-trash-can"></i>
-          </div>
-        </div>
-        <div class="mt-2 flex items-baseline">
-          <span id="metricScrapQty" class="text-2xl font-bold text-white">0</span>
-          <span class="ml-1 text-xs text-slate-400">pcs</span>
-        </div>
-        <div class="mt-2 text-xs text-slate-400">
-          Weight: <span id="metricScrapWeight" class="text-white font-semibold">0</span> kg
-        </div>
-      </div>
-
-      <!-- Metric 3: Overall Scrap Rate % -->
-      <div class="bg-slate-900 border border-slate-800/80 rounded-xl p-5 shadow-sm relative overflow-hidden">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Scrap Rate</span>
-          <div class="p-2 rounded-lg bg-amber-500/10 text-amber-400">
-            <i class="fa-solid fa-percent"></i>
-          </div>
-        </div>
-        <div class="mt-2 flex items-baseline">
-          <span id="metricScrapRate" class="text-2xl font-bold text-white">0.00%</span>
-        </div>
-        <div class="mt-2 text-xs text-slate-500 flex items-center space-x-1">
-          <span>Benchmark KPI: <strong class="text-slate-300">2.5%</strong></span>
-        </div>
-      </div>
-
-      <!-- Metric 4: Day vs Night Ratio -->
-      <div class="bg-slate-900 border border-slate-800/80 rounded-xl p-5 shadow-sm relative overflow-hidden">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Day / Night Split</span>
-          <div class="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
-            <i class="fa-solid fa-sun-plant-wilt"></i>
-          </div>
-        </div>
-        <div class="mt-2 flex items-baseline space-x-2">
-          <span id="metricDayScrap" class="text-lg font-bold text-amber-400">Day: 0</span>
-          <span class="text-slate-600">/</span>
-          <span id="metricNightScrap" class="text-lg font-bold text-indigo-400">Night: 0</span>
-        </div>
-        <div class="mt-2 text-xs text-slate-500">
-          Ratio: <span id="metricShiftRatio" class="text-slate-300 font-semibold">50 / 50</span>
-        </div>
-      </div>
     </section>
 
-    <!-- TAB 1: EXECUTIVE OVERVIEW -->
-    <div id="view-overview" class="tab-content space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Daily Scrap Trend -->
-        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-sm font-semibold text-slate-200">Daily Scrap Trend vs Target</h2>
-            <span class="text-xs text-slate-500">Daily Quantity</span>
-          </div>
-          <div class="h-72 w-full">
-            <canvas id="chartDailyTrend"></canvas>
-          </div>
-        </div>
-
-        <!-- Scrap Breakdown by Department -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-sm font-semibold text-slate-200">Scrap by Department</h2>
-            <span class="text-xs text-slate-500">Percentage</span>
-          </div>
-          <div class="h-72 w-full flex items-center justify-center">
-            <canvas id="chartDeptBreakdown"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 2: SHIFT ANALYSIS -->
-    <div id="view-shift" class="tab-content hidden space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Shift Comparison Bar Chart -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-sm font-semibold text-slate-200">Scrap Quantity by Shift & Category</h2>
-            <span class="text-xs text-slate-500">Day vs Night</span>
-          </div>
-          <div class="h-80 w-full">
-            <canvas id="chartShiftComparison"></canvas>
-          </div>
-        </div>
-
-        <!-- Shift Defect Heatmap / Detailed Breakdown -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm flex flex-col justify-between">
-          <div>
-            <h2 class="text-sm font-semibold text-slate-200 mb-4">Shift Scrap Key Insights</h2>
-            <div id="shiftInsightsList" class="space-y-3 text-sm text-slate-300">
-              <!-- Dynamically populated -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-500">ยอดผลิตรวม (Total Output)</p>
+                    <h3 id="kpiOutput" class="text-2xl font-bold text-slate-900 mt-1">0</h3>
+                    <span class="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full mt-2 inline-block">Units</span>
+                </div>
+                <div class="bg-indigo-50 text-indigo-600 p-3 rounded-2xl text-xl">📦</div>
             </div>
-          </div>
-          <div class="mt-6 pt-4 border-t border-slate-800 flex justify-between text-xs text-slate-400">
-            <span>Peak Defect Hour (Night): <strong>02:00 - 04:00 AM</strong></span>
-            <span>Peak Defect Hour (Day): <strong>10:00 - 11:30 AM</strong></span>
-          </div>
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-500">ยอดของเสียรวม (Total Scrap)</p>
+                    <h3 id="kpiScrap" class="text-2xl font-bold text-rose-600 mt-1">0</h3>
+                    <span class="text-xs text-rose-600 font-medium bg-rose-50 px-2 py-0.5 rounded-full mt-2 inline-block">Defects</span>
+                </div>
+                <div class="bg-rose-50 text-rose-600 p-3 rounded-2xl text-xl">⚠️</div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-500">% ของเสียเฉลี่ย (% Scrap Rate)</p>
+                    <h3 id="kpiScrapRate" class="text-2xl font-bold text-amber-600 mt-1">0.00%</h3>
+                    <span class="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-0.5 rounded-full mt-2 inline-block">Target < 3.0%</span>
+                </div>
+                <div class="bg-amber-50 text-amber-600 p-3 rounded-2xl text-xl">📈</div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-500">จำนวนบันทึกข้อมูล (Records)</p>
+                    <h3 id="kpiRecords" class="text-2xl font-bold text-slate-900 mt-1">0</h3>
+                    <span class="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full mt-2 inline-block">Entries</span>
+                </div>
+                <div class="bg-blue-50 text-blue-600 p-3 rounded-2xl text-xl">📋</div>
+            </div>
         </div>
-      </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Daily Output vs Scrap Chart -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-800 text-base">📊 ผลิต vs ของเสียรายวัน (Daily Production & Scrap)</h3>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg">แยกตามวัน & กะ</span>
+                </div>
+                <div class="relative flex-1 min-h-[300px]">
+                    <canvas id="dailyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Pareto Chart (80/20) -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-800 text-base">📉 กราฟพาเรโต 80/20 สาเหตุของเสีย (Pareto Analysis)</h3>
+                    <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg font-medium">Top Defect Causes</span>
+                </div>
+                <div class="relative flex-1 min-h-[300px]">
+                    <canvas id="paretoChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Breakdown by Department -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
+                <h3 class="font-bold text-slate-800 text-base mb-3">🏭 สรุปแยกตามหน่วยงาน (Department Summary)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                            <tr>
+                                <th class="p-2.5 font-semibold">หน่วยงาน</th>
+                                <th class="p-2.5 font-semibold text-right">ผลิต</th>
+                                <th class="p-2.5 font-semibold text-right">Scrap</th>
+                                <th class="p-2.5 font-semibold text-right">%Scrap</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deptTableBody" class="divide-y divide-slate-100">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Raw Data Table Viewer -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2 flex flex-col">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-bold text-slate-800 text-base">📝 ข้อมูลดิบที่ใช้งานปัจจุบัน (Raw Data Records)</h3>
+                    <button onclick="addNewRowModal()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+                        + เพิ่มรายการใหม่
+                    </button>
+                </div>
+                <div class="overflow-x-auto flex-1 max-h-[300px]">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200 sticky top-0">
+                            <tr>
+                                <th class="p-2 font-semibold">วันที่</th>
+                                <th class="p-2 font-semibold">กะ</th>
+                                <th class="p-2 font-semibold">หน่วยงาน</th>
+                                <th class="p-2 font-semibold">สาเหตุ Scrap</th>
+                                <th class="p-2 font-semibold text-right">ผลิต</th>
+                                <th class="p-2 font-semibold text-right">Scrap</th>
+                                <th class="p-2 font-semibold text-center">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rawTableBody" class="divide-y divide-slate-100">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="addModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <h3 class="text-lg font-bold text-slate-800">➕ เพิ่มบันทึกข้อมูลการผลิต</h3>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">วันที่ (Date)</label>
+                    <input type="date" id="modalDate" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">กะ (Shift)</label>
+                    <select id="modalShift" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <option value="Day">Day (กลางวัน)</option>
+                        <option value="Night">Night (กลางคืน)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">หน่วยงาน (Department)</label>
+                    <select id="modalDept" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <option value="ตู้ไลน์ A">ตู้ไลน์ A</option>
+                        <option value="Door">Door</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">สาเหตุ Scrap (Defect Cause)</label>
+                    <input type="text" id="modalDefect" placeholder="เช่น รอยขีดข่วน, บุบ, ขนาดไม่ได้" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">ยอดผลิตรวม (Output)</label>
+                        <input type="number" id="modalOutput" value="500" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">จำนวน Scrap</label>
+                        <input type="number" id="modalScrap" value="10" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-medium transition">ยกเลิก</button>
+                <button onclick="saveNewRecord()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition">บันทึกข้อมูล</button>
+            </div>
+        </div>
     </div>
 
-    <!-- TAB 3: PARETO ANALYSIS -->
-    <div id="view-pareto" class="tab-content hidden space-y-6">
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
-          <div>
-            <h2 class="text-sm font-semibold text-slate-200">Pareto Scrap Reason Analysis (80/20 Rule)</h2>
-            <p class="text-xs text-slate-400">Identify the top 20% of defect root causes responsible for 80% of total scrap</p>
-          </div>
-          <span class="px-2.5 py-1 text-xs font-semibold rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 w-max">
-            Vital Few Defects
-          </span>
-        </div>
-        <div class="h-96 w-full">
-          <canvas id="chartPareto"></canvas>
-        </div>
-      </div>
-    </div>
+    <script>
+        // Default Sample Data matching requirements
+        let rawData = [
+            { date: "2026-10-12", shift: "Day", dept: "ตู้ไลน์ A", defect: "รอยขีดข่วน (Scratch)", output: 500, scrap: 25 },
+            { date: "2026-10-12", shift: "Night", dept: "ตู้ไลน์ A", defect: "ขนาดไม่ได้มาตรฐาน", output: 480, scrap: 15 },
+            { date: "2026-10-12", shift: "Day", dept: "Door", defect: "บุบ/เสียรูป (Deform)", output: 400, scrap: 20 },
+            { date: "2026-10-13", shift: "Day", dept: "ตู้ไลน์ A", defect: "รอยขีดข่วน (Scratch)", output: 520, scrap: 30 },
+            { date: "2026-10-13", shift: "Night", dept: "Door", defect: "สีไม่สม่ำเสมอ", output: 450, scrap: 12 },
+            { date: "2026-10-13", shift: "Night", dept: "ตู้ไลน์ A", defect: "บุบ/เสียรูป (Deform)", output: 490, scrap: 18 },
+            { date: "2026-10-14", shift: "Day", dept: "ตู้ไลน์ A", defect: "รอยขีดข่วน (Scratch)", output: 510, scrap: 22 },
+            { date: "2026-10-14", shift: "Day", dept: "Door", defect: "รอยขีดข่วน (Scratch)", output: 420, scrap: 8 },
+            { date: "2026-10-14", shift: "Night", dept: "Door", defect: "ขนาดไม่ได้มาตรฐาน", output: 430, scrap: 5 }
+        ];
 
-    <!-- TAB 4: RAW DATA TABLE -->
-    <div id="view-table" class="tab-content hidden space-y-4">
-      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-        <div class="p-4 border-b border-slate-800 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
-          <div class="relative max-w-xs w-full">
-            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-500 text-xs"></i>
-            <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="Search records..." class="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-800 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-blue-500" />
-          </div>
-          <div class="text-xs text-slate-400">
-            Showing <span id="tableRecordCount" class="text-white font-medium">0</span> entries
-          </div>
-        </div>
+        let dailyChartInstance = null;
+        let paretoChartInstance = null;
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs text-slate-300">
-            <thead class="bg-slate-800/60 uppercase font-semibold text-slate-400 border-b border-slate-800">
-              <tr>
-                <th class="py-3 px-4">Date</th>
-                <th class="py-3 px-4">Shift</th>
-                <th class="py-3 px-4">Department</th>
-                <th class="py-3 px-4">Defect Reason</th>
-                <th class="py-3 px-4 text-right">Production (pcs)</th>
-                <th class="py-3 px-4 text-right">Scrap (pcs)</th>
-                <th class="py-3 px-4 text-right">Scrap (kg)</th>
-                <th class="py-3 px-4 text-right">Scrap Rate %</th>
-              </tr>
-            </thead>
-            <tbody id="scrapTableBody" class="divide-y divide-slate-800/50">
-              <tr>
-                <td colspan="8" class="text-center py-8 text-slate-500">No scrap data loaded. Click "Load Demo Data" or Upload an Excel File.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+        window.onload = function() {
+            populateDateFilter();
+            filterData();
+        };
 
-  </main>
-
-  <script>
-    // Global State Application Data
-    let rawData = [];
-    let charts = {};
-
-    // Sample Demo Data Generator
-    const demoData = [
-      { Date: '2026-10-01', Shift: 'Day', Department: 'Stamping', Reason: 'Surface Scratch', Production: 5000, ScrapQty: 120, ScrapWeight: 36 },
-      { Date: '2026-10-01', Shift: 'Night', Department: 'Stamping', Reason: 'Dimensional Variance', Production: 4800, ScrapQty: 210, ScrapWeight: 63 },
-      { Date: '2026-10-02', Shift: 'Day', Department: 'Welding', Reason: 'Porosity/Blowing', Production: 3200, ScrapQty: 95, ScrapWeight: 42.5 },
-      { Date: '2026-10-02', Shift: 'Night', Department: 'Welding', Reason: 'Crack/Misalignment', Production: 3100, ScrapQty: 180, ScrapWeight: 81 },
-      { Date: '2026-10-03', Shift: 'Day', Department: 'Assembly', Reason: 'Missing Part', Production: 6000, ScrapQty: 45, ScrapWeight: 9 },
-      { Date: '2026-10-03', Shift: 'Night', Department: 'Assembly', Reason: 'Fastener Stripped', Production: 5800, ScrapQty: 85, ScrapWeight: 17 },
-      { Date: '2026-10-04', Shift: 'Day', Department: 'Painting', Reason: 'Paint Drips/Runs', Production: 4500, ScrapQty: 140, ScrapWeight: 28 },
-      { Date: '2026-10-04', Shift: 'Night', Department: 'Painting', Reason: 'Color Mismatch', Production: 4200, ScrapQty: 230, ScrapWeight: 46 },
-      { Date: '2026-10-05', Shift: 'Day', Department: 'Machining', Reason: 'Tool Mark Burrs', Production: 2800, ScrapQty: 75, ScrapWeight: 30 },
-      { Date: '2026-10-05', Shift: 'Night', Department: 'Machining', Reason: 'Dimensional Variance', Production: 2700, ScrapQty: 165, ScrapWeight: 66 },
-      { Date: '2026-10-06', Shift: 'Day', Department: 'Stamping', Reason: 'Surface Scratch', Production: 5200, ScrapQty: 110, ScrapWeight: 33 },
-      { Date: '2026-10-06', Shift: 'Night', Department: 'Stamping', Reason: 'Crack/Misalignment', Production: 4900, ScrapQty: 195, ScrapWeight: 58.5 },
-    ];
-
-    // Load Demo Data
-    function loadSampleData() {
-      rawData = [...demoData];
-      document.getElementById('fileStatusBanner').classList.remove('hidden');
-      document.getElementById('fileNameDisplay').innerText = 'Executive_Demo_Scrap_Report.xlsx';
-      document.getElementById('recordCountDisplay').innerText = rawData.length;
-      updateDashboard();
-    }
-
-    // Handle File Upload using SheetJS
-    function handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          const json = XLSX.utils.sheet_to_json(worksheet);
-
-          // Standardize fields
-          rawData = json.map((row, idx) => ({
-            Date: row.Date || row.date || `2026-10-${(idx % 28) + 1}`,
-            Shift: (row.Shift || row.shift || (idx % 2 === 0 ? 'Day' : 'Night')).trim(),
-            Department: row.Department || row.department || row.Dept || 'General',
-            Reason: row.Reason || row.reason || row.Defect || 'Unspecified',
-            Production: Number(row.Production || row.production || row.Total || 1000),
-            ScrapQty: Number(row.ScrapQty || row.scrapqty || row.Scrap || row.Qty || 10),
-            ScrapWeight: Number(row.ScrapWeight || row.scrapweight || row.Weight || 5)
-          }));
-
-          document.getElementById('fileStatusBanner').classList.remove('hidden');
-          document.getElementById('fileNameDisplay').innerText = file.name;
-          document.getElementById('recordCountDisplay').innerText = rawData.length;
-
-          updateDashboard();
-        } catch (err) {
-          alert('Error parsing Excel file. Please ensure valid format.');
-          console.error(err);
+        function loadSampleData() {
+            // Reset to default sample
+            rawData = [
+                { date: "2026-10-12", shift: "Day", dept: "ตู้ไลน์ A", defect: "รอยขีดข่วน (Scratch)", output: 500, scrap: 25 },
+                { date: "2026-10-12", shift: "Night", dept: "ตู้ไลน์ A", defect: "ขนาดไม่ได้มาตรฐาน", output: 480, scrap: 15 },
+                { date: "2026-10-12", shift: "Day", dept: "Door", defect: "บุบ/เสียรูป (Deform)", output: 400, scrap: 20 },
+                { date: "2026-10-13", shift: "Day", dept: "ตู้ไลน์ A", defect: "รอยขีดข่วน (Scratch)", output: 520, scrap: 30 },
+                { date: "2026-10-13", shift: "Night", dept: "Door", defect: "สีไม่สม่ำเสมอ", output: 450, scrap: 12 },
+                { date: "2026-10-13", shift: "Night", dept: "ตู้ไลน์ A", defect: "บุบ/เสียรูป (Deform)", output: 490, scrap: 18 },
+                { date: "2026-10-14", shift: "Day", dept: "ตู้ไลน์ A", defect: "รอยขีดข่วน (Scratch)", output: 510, scrap: 22 },
+                { date: "2026-10-14", shift: "Day", dept: "Door", defect: "รอยขีดข่วน (Scratch)", output: 420, scrap: 8 },
+                { date: "2026-10-14", shift: "Night", dept: "Door", defect: "ขนาดไม่ได้มาตรฐาน", output: 430, scrap: 5 }
+            ];
+            populateDateFilter();
+            filterData();
         }
-      };
-      reader.readAsArrayBuffer(file);
-    }
 
-    // Clear and Reset Data
-    function resetData() {
-      rawData = [];
-      document.getElementById('fileStatusBanner').classList.add('hidden');
-      document.getElementById('fileInput').value = '';
-      updateDashboard();
-    }
-
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(el => {
-        el.classList.remove('text-blue-500', 'border-blue-500');
-        el.classList.add('text-slate-400', 'border-transparent');
-      });
-
-      document.getElementById(`view-${tabName}`).classList.remove('hidden');
-      const activeBtn = document.getElementById(`tab-${tabName}`);
-      activeBtn.classList.remove('text-slate-400', 'border-transparent');
-      activeBtn.classList.add('text-blue-500', 'border-blue-500');
-    }
-
-    function updateDashboard() {
-      calculateMetrics();
-      renderCharts();
-      renderTable();
-      renderShiftInsights();
-    }
-
-    function calculateMetrics() {
-      if (rawData.length === 0) {
-        document.getElementById('metricProduction').innerText = '0';
-        document.getElementById('metricScrapQty').innerText = '0';
-        document.getElementById('metricScrapWeight').innerText = '0';
-        document.getElementById('metricScrapRate').innerText = '0.00%';
-        document.getElementById('metricDayScrap').innerText = 'Day: 0';
-        document.getElementById('metricNightScrap').innerText = 'Night: 0';
-        document.getElementById('metricShiftRatio').innerText = '0 / 0';
-        return;
-      }
-
-      const totalProd = rawData.reduce((acc, item) => acc + item.Production, 0);
-      const totalScrap = rawData.reduce((acc, item) => acc + item.ScrapQty, 0);
-      const totalWeight = rawData.reduce((acc, item) => acc + item.ScrapWeight, 0);
-      const rate = totalProd > 0 ? ((totalScrap / totalProd) * 100).toFixed(2) : 0;
-
-      const dayScrap = rawData.filter(d => d.Shift.toLowerCase().includes('day')).reduce((acc, item) => acc + item.ScrapQty, 0);
-      const nightScrap = rawData.filter(d => d.Shift.toLowerCase().includes('night')).reduce((acc, item) => acc + item.ScrapQty, 0);
-
-      document.getElementById('metricProduction').innerText = totalProd.toLocaleString();
-      document.getElementById('metricScrapQty').innerText = totalScrap.toLocaleString();
-      document.getElementById('metricScrapWeight').innerText = totalWeight.toLocaleString();
-      document.getElementById('metricScrapRate').innerText = `${rate}%`;
-      document.getElementById('metricDayScrap').innerText = `Day: ${dayScrap.toLocaleString()}`;
-      document.getElementById('metricNightScrap').innerText = `Night: ${nightScrap.toLocaleString()}`;
-
-      const totalShift = (dayScrap + nightScrap) || 1;
-      const dayPct = Math.round((dayScrap / totalShift) * 100);
-      const nightPct = 100 - dayPct;
-      document.getElementById('metricShiftRatio').innerText = `${dayPct}% / ${nightPct}%`;
-    }
-
-    function renderCharts() {
-      Chart.defaults.color = '#94a3b8';
-      Chart.defaults.font.family = 'Inter';
-
-      // 1. Daily Trend Chart
-      const dailyMap = {};
-      rawData.forEach(d => {
-        dailyMap[d.Date] = (dailyMap[d.Date] || 0) + d.ScrapQty;
-      });
-
-      const trendLabels = Object.keys(dailyMap);
-      const trendData = Object.values(dailyMap);
-
-      if (charts.dailyTrend) charts.dailyTrend.destroy();
-      charts.dailyTrend = new Chart(document.getElementById('chartDailyTrend'), {
-        type: 'line',
-        data: {
-          labels: trendLabels,
-          datasets: [{
-            label: 'Scrap Quantity (pcs)',
-            data: trendData,
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            fill: true,
-            tension: 0.3,
-            borderWidth: 2,
-            pointBackgroundColor: '#3b82f6',
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { grid: { color: '#1e293b' } },
-            y: { grid: { color: '#1e293b' } }
-          }
+        function populateDateFilter() {
+            const dateSelect = document.getElementById('filterDate');
+            const currentVal = dateSelect.value;
+            const uniqueDates = [...new Set(rawData.map(item => item.date))].sort();
+            
+            let html = '<option value="ALL">ทั้งหมดทุกวัน</option>';
+            uniqueDates.forEach(d => {
+                html += `<option value="${d}">${d}</option>`;
+            });
+            dateSelect.innerHTML = html;
+            dateSelect.value = uniqueDates.includes(currentVal) ? currentVal : 'ALL';
         }
-      });
 
-      // 2. Department Breakdown Chart
-      const deptMap = {};
-      rawData.forEach(d => {
-        deptMap[d.Department] = (deptMap[d.Department] || 0) + d.ScrapQty;
-      });
-
-      if (charts.deptBreakdown) charts.deptBreakdown.destroy();
-      charts.deptBreakdown = new Chart(document.getElementById('chartDeptBreakdown'), {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(deptMap),
-          datasets: [{
-            data: Object.values(deptMap),
-            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'],
-            borderWidth: 2,
-            borderColor: '#0f172a'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterDate').value = 'ALL';
+            document.getElementById('filterShift').value = 'ALL';
+            document.getElementById('filterDept').value = 'ALL';
+            filterData();
         }
-      });
 
-      // 3. Shift Comparison Chart
-      const shiftDeptMap = {};
-      rawData.forEach(d => {
-        if (!shiftDeptMap[d.Department]) shiftDeptMap[d.Department] = { Day: 0, Night: 0 };
-        if (d.Shift.toLowerCase().includes('day')) shiftDeptMap[d.Department].Day += d.ScrapQty;
-        else shiftDeptMap[d.Department].Night += d.ScrapQty;
-      });
+        function filterData() {
+            const searchTxt = document.getElementById('searchInput').value.toLowerCase();
+            const dateVal = document.getElementById('filterDate').value;
+            const shiftVal = document.getElementById('filterShift').value;
+            const deptVal = document.getElementById('filterDept').value;
 
-      const depts = Object.keys(shiftDeptMap);
-      const dayData = depts.map(d => shiftDeptMap[d].Day);
-      const nightData = depts.map(d => shiftDeptMap[d].Night);
+            const filtered = rawData.filter(item => {
+                const matchSearch = item.defect.toLowerCase().includes(searchTxt) || item.dept.toLowerCase().includes(searchTxt);
+                const matchDate = (dateVal === 'ALL' || item.date === dateVal);
+                const matchShift = (shiftVal === 'ALL' || item.shift === shiftVal);
+                const matchDept = (deptVal === 'ALL' || item.dept === deptVal);
+                return matchSearch && matchDate && matchShift && matchDept;
+            });
 
-      if (charts.shiftComp) charts.shiftComp.destroy();
-      charts.shiftComp = new Chart(document.getElementById('chartShiftComparison'), {
-        type: 'bar',
-        data: {
-          labels: depts,
-          datasets: [
-            { label: 'Day Shift', data: dayData, backgroundColor: '#f59e0b', borderRadius: 4 },
-            { label: 'Night Shift', data: nightData, backgroundColor: '#6366f1', borderRadius: 4 }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'top' } },
-          scales: {
-            x: { grid: { color: '#1e293b' } },
-            y: { grid: { color: '#1e293b' } }
-          }
+            updateDashboard(filtered);
         }
-      });
 
-      // 4. Pareto Chart (80/20 Combo Bar + Cumulative Line)
-      const reasonMap = {};
-      rawData.forEach(d => {
-        reasonMap[d.Reason] = (reasonMap[d.Reason] || 0) + d.ScrapQty;
-      });
+        function updateDashboard(data) {
+            // Calculate KPIs
+            let totalOutput = data.reduce((sum, item) => sum + Number(item.output), 0);
+            let totalScrap = data.reduce((sum, item) => sum + Number(item.scrap), 0);
+            let scrapRate = totalOutput > 0 ? ((totalScrap / totalOutput) * 100).toFixed(2) : '0.00';
 
-      const sortedReasons = Object.entries(reasonMap).sort((a, b) => b[1] - a[1]);
-      const paretoLabels = sortedReasons.map(item => item[0]);
-      const paretoCounts = sortedReasons.map(item => item[1]);
-      
-      const totalParetoSum = paretoCounts.reduce((a, b) => a + b, 0) || 1;
-      let cumulativeSum = 0;
-      const paretoCumulative = paretoCounts.map(count => {
-        cumulativeSum += count;
-        return ((cumulativeSum / totalParetoSum) * 100).toFixed(1);
-      });
+            document.getElementById('kpiOutput').innerText = totalOutput.toLocaleString();
+            document.getElementById('kpiScrap').innerText = totalScrap.toLocaleString();
+            document.getElementById('kpiScrapRate').innerText = scrapRate + '%';
+            document.getElementById('kpiRecords').innerText = data.length;
 
-      if (charts.pareto) charts.pareto.destroy();
-      charts.pareto = new Chart(document.getElementById('chartPareto'), {
-        type: 'bar',
-        data: {
-          labels: paretoLabels,
-          datasets: [
-            {
-              type: 'bar',
-              label: 'Scrap Quantity',
-              data: paretoCounts,
-              backgroundColor: '#ef4444',
-              borderRadius: 4,
-              yAxisID: 'y'
-            },
-            {
-              type: 'line',
-              label: 'Cumulative %',
-              data: paretoCumulative,
-              borderColor: '#38bdf8',
-              borderWidth: 2,
-              pointBackgroundColor: '#38bdf8',
-              yAxisID: 'y1'
+            updateRawTable(data);
+            updateDeptSummary(data);
+            renderDailyChart(data);
+            renderParetoChart(data);
+        }
+
+        function updateRawTable(data) {
+            const tbody = document.getElementById('rawTableBody');
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">ไม่พบข้อมูลตามเงื่อนไขที่เลือก</td></tr>`;
+                return;
             }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'top' } },
-          scales: {
-            x: { grid: { color: '#1e293b' } },
-            y: {
-              type: 'linear',
-              position: 'left',
-              grid: { color: '#1e293b' },
-              title: { display: true, text: 'Quantity (pcs)' }
-            },
-            y1: {
-              type: 'linear',
-              position: 'right',
-              max: 100,
-              grid: { drawOnChartArea: false },
-              title: { display: true, text: 'Cumulative Percentage (%)' }
-            }
-          }
+
+            let html = '';
+            data.forEach((item, index) => {
+                html += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-2.5 font-medium text-slate-700">${item.date}</td>
+                        <td class="p-2.5"><span class="px-2 py-0.5 rounded text-xs font-medium ${item.shift === 'Day' ? 'bg-amber-50 text-amber-700' : 'bg-indigo-50 text-indigo-700'}">${item.shift}</span></td>
+                        <td class="p-2.5 text-slate-700">${item.dept}</td>
+                        <td class="p-2.5 text-slate-600">${item.defect}</td>
+                        <td class="p-2.5 text-right font-medium text-slate-800">${Number(item.output).toLocaleString()}</td>
+                        <td class="p-2.5 text-right font-medium text-rose-600">${Number(item.scrap).toLocaleString()}</td>
+                        <td class="p-2.5 text-center">
+                            <button onclick="deleteRecord(${index})" class="text-slate-400 hover:text-rose-600 p-1 rounded transition">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
         }
-      });
-    }
 
-    function renderShiftInsights() {
-      const insightsContainer = document.getElementById('shiftInsightsList');
-      if (rawData.length === 0) {
-        insightsContainer.innerHTML = '<p class="text-slate-500">No data available for shift insights.</p>';
-        return;
-      }
+        function updateDeptSummary(data) {
+            const depts = ["ตู้ไลน์ A", "Door"];
+            const tbody = document.getElementById('deptTableBody');
+            let html = '';
 
-      const dayTotal = rawData.filter(d => d.Shift.toLowerCase().includes('day')).reduce((a, b) => a + b.ScrapQty, 0);
-      const nightTotal = rawData.filter(d => d.Shift.toLowerCase().includes('night')).reduce((a, b) => a + b.ScrapQty, 0);
-      
-      const higherShift = nightTotal > dayTotal ? 'Night Shift' : 'Day Shift';
-      const difference = Math.abs(nightTotal - dayTotal);
+            depts.forEach(dept => {
+                const deptItems = data.filter(i => i.dept === dept);
+                const out = deptItems.reduce((s, i) => s + Number(i.output), 0);
+                const scr = deptItems.reduce((s, i) => s + Number(i.scrap), 0);
+                const rate = out > 0 ? ((scr / out) * 100).toFixed(2) : '0.00';
 
-      insightsContainer.innerHTML = `
-        <div class="p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
-          <div class="font-medium text-amber-400 mb-1"><i class="fa-solid fa-triangle-exclamation"></i> Shift Variance Detected</div>
-          <div class="text-xs text-slate-300">
-            <strong>${higherShift}</strong> generated <strong>${difference}</strong> more scrap pieces compared to the opposing shift. Recommend reviewing night shift maintenance procedures.
-          </div>
-        </div>
-        <div class="p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
-          <div class="font-medium text-blue-400 mb-1"><i class="fa-solid fa-lightbulb"></i> Quality Recommendation</div>
-          <div class="text-xs text-slate-300">
-            Focus immediate Kaizen root-cause effort on the top 2 defect categories in the Pareto section to clear over 70% of total rework costs.
-          </div>
-        </div>
-      `;
-    }
+                html += `
+                    <tr class="border-b border-slate-100">
+                        <td class="p-2.5 font-medium text-slate-800">${dept}</td>
+                        <td class="p-2.5 text-right text-slate-600">${out.toLocaleString()}</td>
+                        <td class="p-2.5 text-right text-rose-600">${scr.toLocaleString()}</td>
+                        <td class="p-2.5 text-right font-semibold text-slate-700">${rate}%</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
 
-    function renderTable() {
-      const tbody = document.getElementById('scrapTableBody');
-      tbody.innerHTML = '';
+        function renderDailyChart(data) {
+            const ctx = document.getElementById('dailyChart').getContext('2d');
+            
+            // Group by Date + Shift
+            const map = {};
+            data.forEach(item => {
+                const key = `${item.date} (${item.shift})`;
+                if (!map[key]) map[key] = { output: 0, scrap: 0 };
+                map[key].output += Number(item.output);
+                map[key].scrap += Number(item.scrap);
+            });
 
-      if (rawData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-500">No scrap data loaded.</td></tr>';
-        document.getElementById('tableRecordCount').innerText = '0';
-        return;
-      }
+            const labels = Object.keys(map).sort();
+            const outputs = labels.map(l => map[l].output);
+            const scraps = labels.map(l => map[l].scrap);
 
-      document.getElementById('tableRecordCount').innerText = rawData.length;
+            if (dailyChartInstance) dailyChartInstance.destroy();
 
-      rawData.forEach(row => {
-        const rate = row.Production > 0 ? ((row.ScrapQty / row.Production) * 100).toFixed(2) : '0.00';
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-800/40 transition';
-        tr.innerHTML = `
-          <td class="py-2.5 px-4 font-mono text-slate-400">${row.Date}</td>
-          <td class="py-2.5 px-4">
-            <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${row.Shift.toLowerCase().includes('day') ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'}">
-              ${row.Shift}
-            </span>
-          </td>
-          <td class="py-2.5 px-4 font-medium text-slate-200">${row.Department}</td>
-          <td class="py-2.5 px-4 text-slate-300">${row.Reason}</td>
-          <td class="py-2.5 px-4 text-right font-mono">${row.Production.toLocaleString()}</td>
-          <td class="py-2.5 px-4 text-right font-mono font-semibold text-rose-400">${row.ScrapQty.toLocaleString()}</td>
-          <td class="py-2.5 px-4 text-right font-mono">${row.ScrapWeight.toLocaleString()}</td>
-          <td class="py-2.5 px-4 text-right font-mono ${rate > 3 ? 'text-rose-400 font-semibold' : 'text-slate-300'}">${rate}%</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+            dailyChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'ยอดผลิตรวม (Output)', data: outputs, backgroundColor: '#6366f1', borderRadius: 6 },
+                        { label: 'ยอดของเสีย (Scrap)', data: scraps, backgroundColor: '#f43f5e', borderRadius: 6 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
+                }
+            });
+        }
 
-    function filterTable() {
-      const searchValue = document.getElementById('tableSearch').value.toLowerCase();
-      const rows = document.querySelectorAll('#scrapTableBody tr');
+        function renderParetoChart(data) {
+            const ctx = document.getElementById('paretoChart').getContext('2d');
 
-      rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(searchValue) ? '' : 'none';
-      });
-    }
+            // Aggregate scrap by defect cause
+            const defectMap = {};
+            data.forEach(item => {
+                defectMap[item.defect] = (defectMap[item.defect] || 0) + Number(item.scrap);
+            });
 
-    // Initialize Demo Data automatically on page load
-    window.onload = function() {
-      loadSampleData();
-    };
-  </script>
+            // Sort descending
+            const sortedDefects = Object.keys(defectMap).map(k => ({ cause: k, count: defectMap[k] })).sort((a, b) => b.count - a.count);
+
+            const labels = sortedDefects.map(d => d.cause);
+            const counts = sortedDefects.map(d => d.count);
+
+            const totalScrap = counts.reduce((a, b) => a + b, 0);
+            let cumulativeSum = 0;
+            const cumulativePercentages = counts.map(c => {
+                cumulativeSum += c;
+                return totalScrap > 0 ? parseFloat(((cumulativeSum / totalScrap) * 100).toFixed(1)) : 0;
+            });
+
+            if (paretoChartInstance) paretoChartInstance.destroy();
+
+            paretoChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'จำนวน Scrap (Qty)',
+                            data: counts,
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 6,
+                            yAxisID: 'y'
+                        },
+                        {
+                            type: 'line',
+                            label: '% สะสม (Cumulative %)',
+                            data: cumulativePercentages,
+                            borderColor: '#f59e0b',
+                            backgroundColor: '#f59e0b',
+                            borderWidth: 3,
+                            fill: false,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: {
+                        y: { beginAtZero: true, position: 'left', title: { display: true, text: 'Scrap Qty' }, grid: { color: '#f1f5f9' } },
+                        y1: { beginAtZero: true, max: 100, position: 'right', title: { display: true, text: 'Cumulative %' }, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Modal Handlers
+        function addNewRowModal() {
+            document.getElementById('modalDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('addModal').classList.remove('hidden');
+            document.getElementById('addModal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('flex');
+            document.getElementById('addModal').classList.add('hidden');
+        }
+
+        function saveNewRecord() {
+            const date = document.getElementById('modalDate').value;
+            const shift = document.getElementById('modalShift').value;
+            const dept = document.getElementById('modalDept').value;
+            const defect = document.getElementById('modalDefect').value || 'อื่นๆ';
+            const output = Number(document.getElementById('modalOutput').value);
+            const scrap = Number(document.getElementById('modalScrap').value);
+
+            if (!date) {
+                alert('กรุณาระบุวันที่');
+                return;
+            }
+
+            rawData.push({ date, shift, dept, defect, output, scrap });
+            populateDateFilter();
+            filterData();
+            closeModal();
+        }
+
+        function deleteRecord(index) {
+            if (confirm('คุณต้องการลบรายการนี้ใช่หรือไม่?')) {
+                rawData.splice(index, 1);
+                populateDateFilter();
+                filterData();
+            }
+        }
+
+        // CSV File Import Handler
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                parseCSV(text);
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCSV(text) {
+            const lines = text.split(/\r\n|\n/);
+            if (lines.length < 2) {
+                alert('ไฟล์ CSV ไม่มีข้อมูลเพียงพอ');
+                return;
+            }
+
+            let newRecords = [];
+            // Assuming format: date, shift, dept, defect, output, scrap
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                const cols = line.split(',');
+                if (cols.length >= 6) {
+                    newRecords.push({
+                        date: cols[0].trim(),
+                        shift: cols[1].trim(),
+                        dept: cols[2].trim(),
+                        defect: cols[3].trim(),
+                        output: Number(cols[4].trim()) || 0,
+                        scrap: Number(cols[5].trim()) || 0
+                    });
+                }
+            }
+
+            if (newRecords.length > 0) {
+                rawData = newRecords;
+                populateDateFilter();
+                filterData();
+                alert(`นำเข้าข้อมูลสำเร็จ ${newRecords.length} รายการ!`);
+            } else {
+                alert('ไม่สามารถอ่านรูปแบบ CSV ได้ กรุณาตรวจสอบหัวข้อคอลัมน์ (Date, Shift, Department, Defect, Output, Scrap)');
+            }
+        }
+    </script>
 </body>
 </html>
