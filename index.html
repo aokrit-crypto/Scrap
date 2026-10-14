@@ -6,6 +6,7 @@
     <title>Production & Scrap Pareto Dashboard - Detailed Analytics</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { slate: { 50:'#020617', 100:'#0f172a', 200:'#1e293b', 300:'#334155', 400:'#475569', 500:'#64748b', 600:'#94a3b8', 700:'#cbd5e1', 800:'#dfe4ec', 900:'#ffffff', 950:'#f2f5f9' } } } } };</script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- SheetJS (XLSX Reader / Writer) -->
@@ -13,16 +14,17 @@
     <!-- Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Sarabun', 'Inter', sans-serif; font-size: 16px; line-height: 1.55; }
+        body { font-family: 'Sarabun', 'Inter', sans-serif; font-size: 17px; line-height: 1.6; letter-spacing: 0.1px; }
+        html { font-size: 17px; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #eef1f6; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #aab4c4; border-radius: 4px; }
             #filterShift, #filterDept { min-width: 0; width: 100%; text-overflow: clip; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased">
+<body class="bg-slate-950 text-slate-300 min-h-screen flex flex-col antialiased">
 
-    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
+    <header class="bg-[#0f2a4d] border-b border-[#0b1f3a] shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
             <div class="flex items-center space-x-3">
                 <div class="bg-gradient-to-tr from-indigo-600 to-violet-500 p-2.5 rounded-xl text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
@@ -31,9 +33,9 @@
                 <div>
                     <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
                         Production & Scrap Analytics System
-                        <span class="text-sm font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"><span class="rngTxt">01/10/2026 - 12/10/2026</span></span>
+                        <span class="text-sm font-semibold px-2 py-0.5 rounded-full bg-white/10 text-blue-100 border border-white/25"><span class="rngTxt">01/10/2026 - 12/10/2026</span></span>
                     </h1>
-                    <p class="text-sm text-slate-300">ระบบวิเคราะห์ข้อมูลการผลิต, ปัญหา Scrap และ Pareto 80/20 แยกตามกะและหน่วยงาน</p>
+                    <p class="text-sm text-blue-100">ระบบวิเคราะห์ข้อมูลการผลิต, ปัญหา Scrap และ Pareto 80/20 แยกตามกะและหน่วยงาน</p>
                 </div>
             </div>
             
@@ -102,7 +104,7 @@
         </div>
     </section>
 
-    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-8">
         
         <!-- Key Performance Indicators -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -111,35 +113,35 @@
                 <span id="kpiOutputSplit" class="text-xs text-slate-300 mt-1"></span>
                 <div class="flex items-baseline justify-between mt-2">
                     <h3 id="kpiOutput" class="text-2xl font-bold text-slate-100">0</h3>
-                    <span class="text-sm text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">ชิ้น</span>
+                    <span class="text-sm text-emerald-700 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">ชิ้น</span>
                 </div>
             </div>
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
                 <span class="text-sm font-medium text-slate-300">ยอด Scrap รวม (Defect Qty)</span>
                 <div class="flex items-baseline justify-between mt-2">
                     <h3 id="kpiScrap" class="text-2xl font-bold text-rose-500">0</h3>
-                    <span class="text-sm text-rose-400 font-semibold bg-rose-500/10 px-2 py-0.5 rounded-full">ชิ้น</span>
+                    <span class="text-sm text-rose-600 font-semibold bg-rose-500/10 px-2 py-0.5 rounded-full">ชิ้น</span>
                 </div>
             </div>
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
                 <span class="text-sm font-medium text-slate-300">% Scrap อัตราของเสีย</span>
                 <div class="flex items-baseline justify-between mt-2">
-                    <h3 id="kpiScrapRate" class="text-2xl font-bold text-amber-400">0.00%</h3>
-                    <span class="text-sm text-amber-400 font-semibold bg-amber-500/10 px-2 py-0.5 rounded-full">เป้าหมาย &lt; 2.5%</span>
+                    <h3 id="kpiScrapRate" class="text-2xl font-bold text-amber-700">0.00%</h3>
+                    <span class="text-sm text-amber-700 font-semibold bg-amber-500/10 px-2 py-0.5 rounded-full">เป้าหมาย &lt; 2.5%</span>
                 </div>
             </div>
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
                 <span class="text-sm font-medium text-slate-300">หน่วยงาน Scrap สูงสุด</span>
                 <div class="flex items-baseline justify-between mt-2">
-                    <h3 id="kpiMaxDept" class="text-base font-bold text-indigo-400 truncate">-</h3>
+                    <h3 id="kpiMaxDept" class="text-base font-bold text-indigo-700 truncate">-</h3>
                     <span class="text-xs text-slate-300">สูงสุด</span>
                 </div>
             </div>
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
                 <span class="text-sm font-medium text-slate-300">จำนวนบันทึกข้อมูลดิบ</span>
                 <div class="flex items-baseline justify-between mt-2">
-                    <h3 id="kpiRecords" class="text-2xl font-bold text-sky-400">0</h3>
-                    <span class="text-sm text-sky-400 font-semibold bg-sky-500/10 px-2 py-0.5 rounded-full">รายการ</span>
+                    <h3 id="kpiRecords" class="text-2xl font-bold text-sky-700">0</h3>
+                    <span class="text-sm text-sky-700 font-semibold bg-sky-500/10 px-2 py-0.5 rounded-full">รายการ</span>
                 </div>
             </div>
         </div>
@@ -149,6 +151,8 @@
             <button data-t="2">📉 Pareto TOP 10 + ปัญหาอื่นๆ</button>
             <button data-t="3">🏭 สัดส่วน Scrap แยกตามหน่วยงาน / สรุปตามผู้รับผิดชอบ-แผนก</button>
         </div>
+
+        <p class="text-sm text-slate-500 -mt-4">💡 คลิกที่แท่งหรือส่วนของกราฟเพื่อกรองข้อมูลเจาะลึก (กด “รีเซ็ตตัวกรอง” เพื่อกลับ)</p>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Daily Production & Scrap Bar Chart -->
@@ -172,27 +176,40 @@
                         <h3 class="font-bold text-slate-100 text-base">📉 Pareto TOP 10 + ปัญหาอื่นๆ</h3>
                         <p class="text-sm text-slate-300">วิเคราะห์สาเหตุปัญหา Scrap หลักเรียงจากมากไปน้อย</p>
                     </div>
-                    <span class="text-sm bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-lg font-medium">Top Defect Zone</span>
+                    <span class="text-sm bg-amber-500/10 text-amber-700 border border-amber-500/20 px-2.5 py-1 rounded-lg font-medium">Top Defect Zone</span>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-10 gap-4"><div class="relative lg:col-span-7 min-h-[340px]"><canvas id="paretoChart"></canvas></div><div id="paretoTable" class="lg:col-span-3 max-h-[340px] overflow-auto custom-scrollbar"></div></div>
             </div>
+
+            <div data-pg="2" class="hidden lg:col-span-2 bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col">
+                <h3 class="font-bold text-slate-100 text-base">⚖️ เปรียบเทียบปัญหาหลัก แยกหน่วยงาน (ตู้ A Line vs Door)</h3>
+                <p class="text-sm text-slate-400 mb-3">TOP 8 ปัญหาที่พบมากที่สุด — คลิกแท่งเพื่อดูรายละเอียดของปัญหาและหน่วยงานนั้น</p>
+                <div class="relative min-h-[400px]"><canvas id="defectDeptChart"></canvas></div>
+            </div>
         </div>
 
-        <div data-pg="3" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div data-pg="3" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Breakdown by Dept Donut -->
             <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col">
                 <h3 class="font-bold text-slate-100 text-base mb-1">🏭 สัดส่วน Scrap แยกตามหน่วยงาน</h3>
                 <p class="text-sm text-slate-300 mb-3">ตู้ A Line vs Door</p>
-                <div class="relative flex-1 min-h-[220px]">
+                <div class="relative flex-1 min-h-[300px]">
                     <canvas id="deptChart"></canvas>
                 </div>
+            </div>
+
+            <!-- Breakdown by Shift Donut -->
+            <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col">
+                <h3 class="font-bold text-slate-100 text-base mb-1">🌗 สัดส่วน Scrap แยกตามกะ</h3>
+                <p class="text-sm text-slate-400 mb-3">Day Shift vs Night Shift</p>
+                <div class="relative flex-1 min-h-[300px]"><canvas id="shiftChart"></canvas></div>
             </div>
 
             <!-- Breakdown by Responsible Party -->
             <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col lg:col-span-2">
                 <h3 class="font-bold text-slate-100 text-base mb-1">👤 สรุป Scrap แยกตามผู้รับผิดชอบ / แผนก</h3>
                 <p class="text-sm text-slate-300 mb-3">จำแนกผู้รับผิดชอบหลักที่เกี่ยวข้อง</p>
-                <div class="relative flex-1 min-h-[220px]">
+                <div class="relative flex-1 min-h-[300px]">
                     <canvas id="respChart"></canvas>
                 </div>
             </div>
@@ -216,15 +233,15 @@
                 <table class="w-full text-left text-sm text-slate-300">
                     <thead class="bg-slate-950 text-slate-300 border-b border-slate-800 sticky top-0 z-10 font-semibold">
                         <tr>
-                            <th class="p-3 cursor-pointer hover:text-white" onclick="sortTable('date')">วันที่ ⇳</th>
-                            <th class="p-3 cursor-pointer hover:text-white" onclick="sortTable('shift')">กะ ⇳</th>
-                            <th class="p-3 cursor-pointer hover:text-white" onclick="sortTable('dept')">หน่วยงาน ⇳</th>
-                            <th class="p-3 cursor-pointer hover:text-white" onclick="sortTable('model')">Model ⇳</th>
+                            <th class="p-3 cursor-pointer hover:text-indigo-700" onclick="sortTable('date')">วันที่ ⇳</th>
+                            <th class="p-3 cursor-pointer hover:text-indigo-700" onclick="sortTable('shift')">กะ ⇳</th>
+                            <th class="p-3 cursor-pointer hover:text-indigo-700" onclick="sortTable('dept')">หน่วยงาน ⇳</th>
+                            <th class="p-3 cursor-pointer hover:text-indigo-700" onclick="sortTable('model')">Model ⇳</th>
                             <th class="p-3">ลักษณะปัญหา (Defect)</th>
                             <th class="p-3">สาเหตุ (Cause)</th>
                             <th class="p-3">Location</th>
                             <th class="p-3">ผู้รับผิดชอบ</th>
-                            <th class="p-3 text-right cursor-pointer hover:text-white" onclick="sortTable('scrap')">Scrap Qty ⇳</th>
+                            <th class="p-3 text-right cursor-pointer hover:text-indigo-700" onclick="sortTable('scrap')">Scrap Qty ⇳</th>
                             <th class="p-3 text-center">จัดการ</th>
                         </tr>
                     </thead>
@@ -239,7 +256,7 @@
                 <div id="pageInfo">แสดงรายการที่ 0 ถึง 0 จากทั้งหมด 0 รายการ</div>
                 <div class="flex items-center space-x-2">
                     <button id="prevBtn" onclick="changePage(-1)" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-300 disabled:opacity-50">ก่อนหน้า</button>
-                    <span id="currentPageNum" class="px-2 py-1 bg-indigo-600/20 text-indigo-400 rounded font-bold">1</span>
+                    <span id="currentPageNum" class="px-2 py-1 bg-indigo-600/20 text-indigo-700 rounded font-bold">1</span>
                     <button id="nextBtn" onclick="changePage(1)" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-300 disabled:opacity-50">ถัดไป</button>
                 </div>
             </div>
@@ -247,7 +264,7 @@
 
     </main>
 
-    <div id="addModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div id="addModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
             <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">
                 ➕ เพิ่มบันทึกข้อมูลการผลิต / Scrap
@@ -316,12 +333,12 @@
             return REAL.map((r, i) => ({ id: i + 1, date: r[0], shift: r[9], dept: r[1], model: r[2], defect: normDefect(r[3]), cause: r[4], location: r[5], resp: r[6], pic: r[8], output: 0, scrap: r[7] }));
         }
 
-        Chart.defaults.font.family = "Sarabun, Inter, sans-serif"; Chart.defaults.font.size = 13; Chart.defaults.color = '#e2e8f0';
+        Chart.defaults.font.family = "Sarabun, Inter, sans-serif"; Chart.defaults.font.size = 13; Chart.defaults.color = '#1e293b';
 Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.font='bold 13px Sarabun,Inter,sans-serif';
  c.data.datasets.forEach((ds,i)=>{if(!ds.lbl&&!ds.pie)return;c.getDatasetMeta(i).data.forEach((e,j)=>{const v=ds.data[j];if(!v)return;
-  if(ds.pie){const p=e.getCenterPoint();x.fillStyle='#0f172a';x.textAlign='center';x.fillText(v,p.x,p.y+4);return}
-  const h=c.options.indexAxis==='y';x.fillStyle=ds.pct?'#38bdf8':'#e2e8f0';x.textAlign=h?'left':'center';
-  if(ds.pct){x.font='bold 11px Sarabun,Inter,sans-serif';const s=v+'%',w=x.measureText(s).width+8,col=ds.borderColor||'#f59e0b';x.fillStyle='#0f172a';x.strokeStyle=col;x.lineWidth=1;x.beginPath();x.rect(e.x-w/2,ds.below?e.y+9:e.y-23,w,15);x.fill();x.stroke();x.fillStyle=col;x.textAlign='center';x.fillText(s,e.x,ds.below?e.y+20.5:e.y-11.5);return}
+  if(ds.pie){const p=e.getCenterPoint();x.fillStyle='#ffffff';x.textAlign='center';x.fillText(v,p.x,p.y+4);return}
+  const h=c.options.indexAxis==='y';x.fillStyle=ds.pct?'#d97706':'#1e293b';x.textAlign=h?'left':'center';
+  if(ds.pct){x.font='bold 11px Sarabun,Inter,sans-serif';const s=v+'%',w=x.measureText(s).width+8,col=ds.borderColor||'#d97706';x.fillStyle='#ffffff';x.strokeStyle=col;x.lineWidth=1;x.beginPath();x.rect(e.x-w/2,ds.below?e.y+9:e.y-23,w,15);x.fill();x.stroke();x.fillStyle=col;x.textAlign='center';x.fillText(s,e.x,ds.below?e.y+20.5:e.y-11.5);return}
   x.font='bold 13px Sarabun,Inter,sans-serif';x.fillText(v,h?e.x+4:e.x,h?e.y+3:e.y-6)})});x.restore()}});
         let masterData = generateInitialDataset();
         let prodData = PROD.map(r => ({ date: r[0], dept: r[1], shift: r[2], plan: r[3] }));
@@ -338,6 +355,7 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
 
         window.onload = function() {
             showPage(1);
+            wireClicks();
             // Default Start & End Dates
             document.getElementById('filterStartDate').value = "2026-10-01";
             document.getElementById('filterEndDate').value = "2026-10-12";
@@ -425,7 +443,7 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
         document.getElementById('dayPrev').onclick = () => stepDay(-1);
         document.getElementById('dayNext').onclick = () => stepDay(1);
 
-        const tabCls = on => 'px-4 py-2 rounded-xl text-base font-semibold border transition ' + (on ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-600/20' : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800');
+        const tabCls = on => 'px-4 py-2 rounded-xl text-base font-semibold border transition ' + (on ? 'bg-[#0f2a4d] border-[#0f2a4d] text-white shadow-md' : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800');
         function showPage(n) {
             document.querySelectorAll('[data-pg]').forEach(el => {
                 const on = el.dataset.pg == n;
@@ -433,7 +451,7 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
                 if (el.dataset.pg == '3') el.classList.toggle('grid', on);
             });
             document.querySelectorAll('#pgTabs button').forEach(b => { b.className = tabCls(b.dataset.t == n); });
-            setTimeout(() => [dailyChartInstance, paretoChartInstance, deptChartInstance, respChartInstance].forEach(c => c && c.resize()), 30);
+            setTimeout(() => [dailyChartInstance, paretoChartInstance, deptChartInstance, respChartInstance, shiftChartInstance, ddChartInstance].forEach(c => c && c.resize()), 30);
         }
         document.getElementById('pgTabs').addEventListener('click', ev => { const b = ev.target.closest('button'); if (b) showPage(b.dataset.t); });
 
@@ -466,6 +484,8 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
             renderDailyChart();
             renderParetoChart();
             renderDeptChart();
+            renderShiftChart();
+            renderDefectDeptChart();
             renderRespChart();
         }
 
@@ -504,7 +524,7 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
                     <tr class="hover:bg-slate-800/50 transition">
                         <td class="p-3 font-medium text-slate-200">${item.date}</td>
                         <td class="p-3">
-                            <span class="px-2 py-0.5 rounded text-xs font-bold ${item.shift === 'Day' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : item.shift === 'ไม่ระบุ' ? 'bg-slate-500/10 text-slate-300 border border-slate-500/20' : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'}">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold ${item.shift === 'Day' ? 'bg-amber-500/10 text-amber-700 border border-amber-500/20' : item.shift === 'ไม่ระบุ' ? 'bg-slate-500/10 text-slate-300 border border-slate-500/20' : 'bg-indigo-500/10 text-indigo-700 border border-indigo-500/20'}">
                                 ${item.shift}
                             </span>
                         </td>
@@ -514,9 +534,9 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
                         <td class="p-3 text-slate-300">${item.cause}</td>
                         <td class="p-3 text-slate-300">${item.location}</td>
                         <td class="p-3 text-slate-300">${item.resp}${item.pic ? ' · ' + item.pic : ''}</td>
-                        <td class="p-3 text-right font-bold text-rose-400">${item.scrap.toLocaleString()}</td>
+                        <td class="p-3 text-right font-bold text-rose-600">${item.scrap.toLocaleString()}</td>
                         <td class="p-3 text-center">
-                            <button onclick="deleteRecord(${item.id})" class="text-slate-400 hover:text-rose-400 p-1 transition">🗑️</button>
+                            <button onclick="deleteRecord(${item.id})" class="text-slate-400 hover:text-rose-600 p-1 transition">🗑️</button>
                         </td>
                     </tr>
                 `;
@@ -578,12 +598,12 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
             const maxRate = Math.max(0.5, ...rateA.concat(rateD).filter(v => v !== null));
             const pc = v => v === null ? '–' : v.toFixed(2) + '%';
             const fmtD = d => d.split('-').reverse().join('/');
-            const hi = (a, b) => (a > 0 && b > 0 && a !== b) ? (a > b ? [' text-rose-300 font-bold', ''] : ['', ' text-rose-300 font-bold']) : ['', ''];
+            const hi = (a, b) => (a > 0 && b > 0 && a !== b) ? (a > b ? [' text-rose-600 font-bold', ''] : ['', ' text-rose-600 font-bold']) : ['', ''];
             let cmpRows = '', TOT = {};
             const addRow = (lbl, dlbl, c, cls) => {
                 const [h1, h2] = hi(c.sd, c.sn);
                 const rd = rateOf(c.pd > 0 ? c.sd : 0, c.pd), rn = rateOf(c.pn > 0 ? c.sn : 0, c.pn), rt = rateOf((c.pd > 0 ? c.sd : 0) + (c.pn > 0 ? c.sn : 0), c.pd + c.pn);
-                cmpRows += `<tr class="border-b border-slate-800 ${cls || ''}"><td class="p-2.5 whitespace-nowrap">${dlbl}</td><td class="p-2.5 whitespace-nowrap">${lbl}</td><td class="p-2.5 text-right${h1}">${c.sd}</td><td class="p-2.5 text-right${h2}">${c.sn}</td><td class="p-2.5 text-right font-bold">${c.sd + c.sn}</td><td class="p-2.5 text-right text-slate-300">${c.pd ? c.pd.toLocaleString() : '–'}</td><td class="p-2.5 text-right text-slate-300">${c.pn ? c.pn.toLocaleString() : '–'}</td><td class="p-2.5 text-right text-amber-300">${pc(rd)}</td><td class="p-2.5 text-right text-amber-300">${pc(rn)}</td><td class="p-2.5 text-right text-amber-300 font-bold">${pc(rt)}</td></tr>`;
+                cmpRows += `<tr class="border-b border-slate-800 ${cls || ''}"><td class="p-2.5 whitespace-nowrap">${dlbl}</td><td class="p-2.5 whitespace-nowrap">${lbl}</td><td class="p-2.5 text-right${h1}">${c.sd}</td><td class="p-2.5 text-right${h2}">${c.sn}</td><td class="p-2.5 text-right font-bold">${c.sd + c.sn}</td><td class="p-2.5 text-right text-slate-300">${c.pd ? c.pd.toLocaleString() : '–'}</td><td class="p-2.5 text-right text-slate-300">${c.pn ? c.pn.toLocaleString() : '–'}</td><td class="p-2.5 text-right text-amber-700">${pc(rd)}</td><td class="p-2.5 text-right text-amber-700">${pc(rn)}</td><td class="p-2.5 text-right text-amber-700 font-bold">${pc(rt)}</td></tr>`;
             };
             labels.forEach(d => DEPTS.forEach(dp => {
                 const c = { sd: sS(d, dp, 'Day'), sn: sS(d, dp, 'Night'), pd: sP(d, dp, 'Day'), pn: sP(d, dp, 'Night') };
@@ -594,14 +614,14 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
             }));
             const G = { sd: 0, sn: 0, pd: 0, pn: 0 };
             Object.keys(TOT).forEach(dp => { addRow(dp, 'รวม', TOT[dp], 'bg-slate-800/70 font-semibold'); ['sd', 'sn', 'pd', 'pn'].forEach(k => G[k] += TOT[dp][k]); });
-            addRow('ทุกหน่วยงาน', 'รวมทั้งหมด', G, 'bg-indigo-900/40 font-bold');
+            addRow('ทุกหน่วยงาน', 'รวมทั้งหมด', G, 'bg-indigo-50 font-bold');
             document.getElementById('dailyCompare').innerHTML = '<table class="w-full text-sm text-left text-slate-200"><thead class="sticky top-0 bg-slate-800 text-slate-100"><tr><th class="p-2.5">วันที่</th><th class="p-2.5">หน่วยงาน</th><th class="p-2.5 text-right">Scrap<br>Day Shift</th><th class="p-2.5 text-right">Scrap<br>Night Shift</th><th class="p-2.5 text-right">Scrap<br>รวม</th><th class="p-2.5 text-right">ผลิต<br>Day Shift</th><th class="p-2.5 text-right">ผลิต<br>Night Shift</th><th class="p-2.5 text-right">Rate<br>Day Shift</th><th class="p-2.5 text-right">Rate<br>Night Shift</th><th class="p-2.5 text-right">Rate<br>รวม</th></tr></thead><tbody>' + cmpRows + '</tbody></table>';
             const showNames = (ctx.canvas.parentElement.clientWidth - 140) / (labels.length * 4.6) >= 30;
             const namesPlugin = { id: 'barNames', afterDatasetsDraw(c) {
                 if (!showNames) return;
                 const x = c.ctx; x.save(); x.textAlign = 'center'; x.font = 'bold 12px Sarabun,sans-serif'; const base = c.chartArea.bottom + 6;
                 c.data.datasets.forEach((ds, i) => { if (ds.type === 'line' || !ds.short) return;
-                    c.getDatasetMeta(i).data.forEach((e, j) => { if (!ds.data[j]) return; x.fillStyle = ds.backgroundColor; x.fillText(ds.short[0], e.x, base + 12); x.fillStyle = '#e2e8f0'; x.fillText(ds.short[1], e.x, base + 27); });
+                    c.getDatasetMeta(i).data.forEach((e, j) => { if (!ds.data[j]) return; x.fillStyle = ds.short[0] === 'Door' ? '#0f766e' : '#1d4ed8'; x.fillText(ds.short[0], e.x, base + 12); x.fillStyle = '#1e293b'; x.fillText(ds.short[1], e.x, base + 27); });
                 });
                 x.restore();
             } };
@@ -614,23 +634,23 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
                 data: {
                     labels: shortLbl,
                     datasets: [
-                        { ...BAR, short: ['A Line', 'Day'], label: 'ตู้ A Line · Day Shift', data: labels.map(l => sS(l, 'ตู้ A Line', 'Day')), backgroundColor: '#3b82f6' },
+                        { ...BAR, short: ['A Line', 'Day'], label: 'ตู้ A Line · Day Shift', data: labels.map(l => sS(l, 'ตู้ A Line', 'Day')), backgroundColor: '#2563eb' },
                         { ...BAR, short: ['A Line', 'Night'], label: 'ตู้ A Line · Night Shift', data: labels.map(l => sS(l, 'ตู้ A Line', 'Night')), backgroundColor: '#93c5fd' },
-                        { ...BAR, short: ['Door', 'Day'], label: 'Door · Day Shift', data: labels.map(l => sS(l, 'Door', 'Day')), backgroundColor: '#14b8a6' },
-                        { ...BAR, short: ['Door', 'Night'], label: 'Door · Night Shift', data: labels.map(l => sS(l, 'Door', 'Night')), backgroundColor: '#99f6e4' },
-                        { type: 'line', label: 'Scrap Rate ตู้ A Line (%)', data: rateA, yAxisID: 'y1', order: 0, borderColor: '#f59e0b', backgroundColor: '#f59e0b', borderWidth: 2.5, pointRadius: 4, pointBorderColor: '#0f172a', pointBorderWidth: 1.5, tension: 0.25, lbl: true, pct: true, spanGaps: true },
-                        { type: 'line', label: 'Scrap Rate Door (%)', data: rateD, yAxisID: 'y1', order: 0, borderColor: '#f472b6', backgroundColor: '#f472b6', borderWidth: 2.5, borderDash: [6, 4], pointRadius: 4, pointBorderColor: '#0f172a', pointBorderWidth: 1.5, tension: 0.25, lbl: true, pct: true, below: true, spanGaps: true }
+                        { ...BAR, short: ['Door', 'Day'], label: 'Door · Day Shift', data: labels.map(l => sS(l, 'Door', 'Day')), backgroundColor: '#0d9488' },
+                        { ...BAR, short: ['Door', 'Night'], label: 'Door · Night Shift', data: labels.map(l => sS(l, 'Door', 'Night')), backgroundColor: '#5eead4' },
+                        { type: 'line', label: 'Scrap Rate ตู้ A Line (%)', data: rateA, yAxisID: 'y1', order: 0, borderColor: '#d97706', backgroundColor: '#d97706', borderWidth: 2.5, pointRadius: 4, pointBorderColor: '#ffffff', pointBorderWidth: 1.5, tension: 0.25, lbl: true, pct: true, spanGaps: true },
+                        { type: 'line', label: 'Scrap Rate Door (%)', data: rateD, yAxisID: 'y1', order: 0, borderColor: '#be185d', backgroundColor: '#be185d', borderWidth: 2.5, borderDash: [6, 4], pointRadius: 4, pointBorderColor: '#ffffff', pointBorderWidth: 1.5, tension: 0.25, lbl: true, pct: true, below: true, spanGaps: true }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false, layout: { padding: { top: 40, right: 8 } },
                     interaction: { mode: 'index', intersect: false },
-                    plugins: { tooltip: { padding: 10, titleFont: { size: 14 }, bodyFont: { size: 12 } }, legend: { position: 'bottom', labels: { color: '#f1f5f9', font: { size: 14, weight: '600' }, usePointStyle: true, boxWidth: 12, boxHeight: 12, padding: 20, filter: (it, d) => { const ds = d.datasets[it.datasetIndex]; return ds.data.some(v => v) && !(showNames && ds.type !== 'line'); } } } },
+                    plugins: { tooltip: { padding: 10, titleFont: { size: 14 }, bodyFont: { size: 12 } }, legend: { position: 'bottom', labels: { color: '#1e293b', font: { size: 14, weight: '600' }, usePointStyle: true, boxWidth: 12, boxHeight: 12, padding: 20, filter: (it, d) => { const ds = d.datasets[it.datasetIndex]; return ds.data.some(v => v) && !(showNames && ds.type !== 'line'); } } } },
                     scales: {
-                        x: { title: axT('วันที่ (วัน/เดือน)', '#94a3b8'), ticks: { padding: showNames ? 40 : 6, color: '#cbd5e1', font: { size: 12 } }, grid: { display: false } },
-                        y: { beginAtZero: true, max: Math.ceil(maxBar * 1.65), title: axT('จำนวน Scrap (ชิ้น)', '#94a3b8'), ticks: { color: '#cbd5e1', font: { size: 13 }, precision: 0 }, grid: { color: 'rgba(148,163,184,0.18)' } },
-                        y1: { position: 'right', min: -maxRate * 2.2, max: maxRate * 1.25, display: hasRate2, title: axT('Scrap Rate (%)', '#f59e0b'), grid: { drawOnChartArea: false }, ticks: { color: '#fbbf24', font: { size: 13 }, callback: v => v < 0 ? '' : Number(v.toFixed(1)) + '%' } }
+                        x: { title: axT('วันที่ (วัน/เดือน)', '#94a3b8'), ticks: { padding: showNames ? 40 : 6, color: '#475569', font: { size: 12 } }, grid: { display: false } },
+                        y: { beginAtZero: true, max: Math.ceil(maxBar * 1.65), title: axT('จำนวน Scrap (ชิ้น)', '#94a3b8'), ticks: { color: '#475569', font: { size: 13 }, precision: 0 }, grid: { color: 'rgba(100,116,139,0.20)' } },
+                        y1: { position: 'right', min: -maxRate * 2.2, max: maxRate * 1.25, display: hasRate2, title: axT('Scrap Rate (%)', '#d97706'), grid: { drawOnChartArea: false }, ticks: { color: '#b45309', font: { size: 13 }, callback: v => v < 0 ? '' : Number(v.toFixed(1)) + '%' } }
                     }
                 }
             });
@@ -676,7 +696,7 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
                             type: 'bar',
                             label: 'จำนวน Scrap (ชิ้น)',
                             data: counts,
-                            backgroundColor: labels.map(l => l === 'ปัญหาอื่นๆ' ? '#64748b' : '#f43f5e'), lbl: true,
+                            backgroundColor: labels.map(l => l === 'ปัญหาอื่นๆ' ? '#94a3b8' : '#2563eb'), lbl: true,
                             borderRadius: 4,
                             yAxisID: 'y'
                         },
@@ -684,9 +704,9 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
                             type: 'line',
                             label: '% สะสม (Cumulative %)',
                             data: cumulativePercentages,
-                            borderColor: '#38bdf8',
+                            borderColor: '#d97706',
                             borderWidth: 2,
-                            pointBackgroundColor: '#38bdf8',
+                            pointBackgroundColor: '#d97706',
                             fill: false, lbl: true, pct: true,
                             yAxisID: 'y1'
                         }
@@ -695,14 +715,54 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
                 options: {
                     responsive: true,
                     maintainAspectRatio: false, layout: { padding: { top: 18, right: 24 } },
-                    plugins: { legend: { labels: { color: '#e2e8f0', font: { size: 13 } } } },
+                    plugins: { legend: { labels: { color: '#1e293b', font: { size: 13 } } } },
                     scales: {
-                        x: { ticks: { color: '#cbd5e1', font: { size: 11 } }, grid: { display: false } },
-                        y: { ticks: { color: '#cbd5e1' }, grid: { color: 'rgba(148,163,184,0.18)' } },
-                        y1: { min: 0, max: 100, position: 'right', ticks: { color: '#38bdf8' }, grid: { display: false } }
+                        x: { ticks: { color: '#475569', font: { size: 11 } }, grid: { display: false } },
+                        y: { ticks: { color: '#475569' }, grid: { color: 'rgba(100,116,139,0.20)' } },
+                        y1: { min: 0, max: 100, position: 'right', ticks: { color: '#d97706' }, grid: { display: false } }
                     }
                 }
             });
+        }
+
+        let shiftChartInstance = null, ddChartInstance = null;
+        function renderShiftChart() {
+            const ctx = document.getElementById('shiftChart').getContext('2d');
+            const m = { Day: 0, Night: 0 };
+            filteredData.forEach(i => { if (m[i.shift] !== undefined) m[i.shift] += Number(i.scrap); });
+            const tot = (m.Day + m.Night) || 1;
+            if (shiftChartInstance) shiftChartInstance.destroy();
+            shiftChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels: [`Day Shift: ${m.Day} (${(m.Day / tot * 100).toFixed(1)}%)`, `Night Shift: ${m.Night} (${(m.Night / tot * 100).toFixed(1)}%)`], datasets: [{ data: [m.Day, m.Night], backgroundColor: ['#f59e0b', '#4338ca'], borderColor: '#ffffff', borderWidth: 3, pie: true }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '52%', layout: { padding: { top: 8 } }, plugins: { legend: { position: 'bottom', labels: { color: '#1e293b', font: { size: 14 }, padding: 16 } } } }
+            });
+        }
+        function renderDefectDeptChart() {
+            const ctx = document.getElementById('defectDeptChart').getContext('2d');
+            const m = {};
+            filteredData.forEach(i => { const o = m[i.defect] = m[i.defect] || { a: 0, d: 0 }; if (i.dept === 'Door') o.d += Number(i.scrap); else o.a += Number(i.scrap); });
+            const top = Object.entries(m).sort((x, y) => (y[1].a + y[1].d) - (x[1].a + x[1].d)).slice(0, 8);
+            if (ddChartInstance) ddChartInstance.destroy();
+            ddChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: top.map(x => x[0]), datasets: [
+                    { label: 'ตู้ A Line', data: top.map(x => x[1].a), backgroundColor: '#2563eb', borderRadius: 3, maxBarThickness: 22, lbl: true },
+                    { label: 'Door', data: top.map(x => x[1].d), backgroundColor: '#0d9488', borderRadius: 3, maxBarThickness: 22, lbl: true }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 36 } },
+                    plugins: { legend: { position: 'bottom', labels: { color: '#1e293b', font: { size: 14 }, padding: 18 } } },
+                    scales: { x: { beginAtZero: true, ticks: { color: '#475569' }, grid: { color: 'rgba(100,116,139,0.20)' } }, y: { ticks: { color: '#1e293b', font: { size: 13 } }, grid: { display: false } } } }
+            });
+        }
+        function wireClicks() {
+            const $ = id => document.getElementById(id);
+            const on = (id, fn) => { const cv = $(id); cv.style.cursor = 'pointer'; cv.addEventListener('click', ev => { const c = Chart.getChart(cv); if (!c) return; const pts = c.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, true); if (pts.length) fn(c, pts[0].index, pts[0].datasetIndex); }); };
+            on('dailyChart', (c, i) => { const l = c.data.labels[i], y = ($('filterStartDate').value || '2026').slice(0, 4), d = `${y}-${l.slice(3, 5)}-${l.slice(0, 2)}`; setRange(d, d); });
+            on('paretoChart', (c, i) => { const l = c.data.labels[i]; $('searchInput').value = l === 'ปัญหาอื่นๆ' ? '' : l; filterData(); });
+            on('deptChart', (c, i) => { $('filterDept').value = c.data.labels[i]; filterData(); });
+            on('shiftChart', (c, i) => { $('filterShift').value = i === 0 ? 'Day' : 'Night'; filterData(); });
+            on('defectDeptChart', (c, i, di) => { $('searchInput').value = c.data.labels[i]; $('filterDept').value = di === 0 ? 'ตู้ A Line' : 'Door'; filterData(); });
+            on('respChart', (c, i) => { $('searchInput').value = c.data.labels[i]; filterData(); });
         }
 
         function renderDeptChart() {
@@ -718,14 +778,14 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
                     labels: Object.keys(deptMap),
                     datasets: [{
                         data: Object.values(deptMap),
-                        backgroundColor: ['#818cf8', '#34d399'],
+                        backgroundColor: Object.keys(deptMap).map(k => k === 'Door' ? '#0d9488' : '#2563eb'),
                         borderWidth: 0, pie: true
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false, layout: { padding: { top: 18, right: 24 } },
-                    plugins: { legend: { position: 'bottom', labels: { color: '#e2e8f0', font: { size: 13 } } } }
+                    plugins: { legend: { position: 'bottom', labels: { color: '#1e293b', font: { size: 13 } } } }
                 }
             });
         }
@@ -744,7 +804,7 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
                     datasets: [{
                         label: 'Scrap ตามผู้รับผิดชอบ',
                         data: Object.values(respMap),
-                        backgroundColor: '#a78bfa', lbl: true,
+                        backgroundColor: '#2563eb', lbl: true,
                         borderRadius: 4
                     }]
                 },
@@ -754,8 +814,8 @@ Chart.register({id:'valLabels',afterDatasetsDraw(c){const x=c.ctx;x.save();x.fon
                     indexAxis: 'y',
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { ticks: { color: '#cbd5e1' }, grid: { color: 'rgba(148,163,184,0.18)' } },
-                        y: { ticks: { color: '#e2e8f0', font: { size: 12 } }, grid: { display: false } }
+                        x: { ticks: { color: '#475569' }, grid: { color: 'rgba(100,116,139,0.20)' } },
+                        y: { ticks: { color: '#1e293b', font: { size: 12 } }, grid: { display: false } }
                     }
                 }
             });
